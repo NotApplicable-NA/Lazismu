@@ -33,7 +33,7 @@
 <!-- Proposal Table -->
 <div class="card shadow-sm border-0">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Proposal <span class="badge bg-primary">100 users</span></h5>
+                    <h5 class="mb-0">Mitra <span class="badge bg-primary">{{ $mitras->count() }} users</span></h5>
                 </div>
                     <div class="card-body p-3">
         <table class="table table-bordered table-striped text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -48,12 +48,13 @@
                 </tr>
             </thead>
             <tbody>
+                @foreach($mitras as $mitra)
                 <tr class= "bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                     <td><input type="checkbox"></td>
-                    <td>Ikatan Mahasiswa Muhammadiyah Komisariat FTI UAD</td>
-                    <td><span class="badge bg-green-500 text-white py-1 px-2 rounded">Aktif</span></td>
-                    <td>082300981234</td>
-                    <td>immfti@uad.ac.id</td>
+                    <td>{{ $mitra->nama }}</td>
+                    <td><span class="badge {{ $mitra->status ? 'bg-green-500' : 'bg-red-500' }} text-white py-1 px-2 rounded">{{ $mitra->status ? 'Aktif' : 'Nonaktif' }}</span></td>
+                    <td>{{ $mitra->no_hp }}</td>
+                    <td>{{ $mitra->email }}</td>
                     <td>
                     <div class="inline-flex space-x-4">
                         <!-- edit action -->
@@ -67,82 +68,7 @@
                     </div>
                 </td>
                 </tr>
-                <tr class= "bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                    <td><input type="checkbox"></td>
-                    <td>Ikatan Mahasiswa Muhammadiyah Komisariat FTI UAD</td>
-                    <td><span class="badge bg-red-500 text-white py-1 px-2 rounded">Nonaktif</span></td>
-                    <td>082300981234</td>
-                    <td>immfti@uad.ac.id</td>
-                    <td>
-                    <div class="inline-flex space-x-4">
-                        <!-- edit action -->
-                        <a href="#" class="flex items-center py-2 text-base font-medium text-gray-900 dark:text-white dark:hover:underline">
-                            <img src="/img/admin-edit.png" alt="Edit action" class="w-5 h-5" />
-                        </a>
-                        <!-- delete action -->
-                        <a href="#" class="flex items-center py-2 text-base font-medium text-gray-900 dark:text-white dark:hover:underline">
-                            <img src="/img/admin-trash.png" alt="Delete action" class="w-5 h-5" />
-                        </a>
-                    </div>
-                </td>
-                </tr>
-                <tr class= "bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                    <td><input type="checkbox"></td>
-                    <td>Ikatan Mahasiswa Muhammadiyah Komisariat FTI UAD</td>
-                    <td><span class="badge bg-green-500 text-white py-1 px-2 rounded">Aktif</span></td>
-                    <td>082300981234</td>
-                    <td>immfti@uad.ac.id</td>
-                    <td>
-                    <div class="inline-flex space-x-4">
-                        <!-- edit action -->
-                        <a href="#" class="flex items-center py-2 text-base font-medium text-gray-900 dark:text-white dark:hover:underline">
-                            <img src="/img/admin-edit.png" alt="Edit action" class="w-5 h-5" />
-                        </a>
-                        <!-- delete action -->
-                        <a href="#" class="flex items-center py-2 text-base font-medium text-gray-900 dark:text-white dark:hover:underline">
-                            <img src="/img/admin-trash.png" alt="Delete action" class="w-5 h-5" />
-                        </a>
-                    </div>
-                </td>
-                </tr>
-                <tr class= "bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                    <td><input type="checkbox"></td>
-                    <td>Ikatan Mahasiswa Muhammadiyah Komisariat FTI UAD</td>
-                    <td><span class="badge bg-green-500 text-white py-1 px-2 rounded">Aktif</span></td>
-                    <td>082300981234</td>
-                    <td>immfti@uad.ac.id</td>
-                    <td>
-                    <div class="inline-flex space-x-4">
-                        <!-- edit action -->
-                        <a href="#" class="flex items-center py-2 text-base font-medium text-gray-900 dark:text-white dark:hover:underline">
-                            <img src="/img/admin-edit.png" alt="Edit action" class="w-5 h-5" />
-                        </a>
-                        <!-- delete action -->
-                        <a href="#" class="flex items-center py-2 text-base font-medium text-gray-900 dark:text-white dark:hover:underline">
-                            <img src="/img/admin-trash.png" alt="Delete action" class="w-5 h-5" />
-                        </a>
-                    </div>
-                </td>
-                </tr>
-                <tr class= "bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                    <td><input type="checkbox"></td>
-                    <td>Ikatan Mahasiswa Muhammadiyah Komisariat FTI UAD</td>
-                    <td><span class="badge bg-green-500 text-white py-1 px-2 rounded">Aktif</span></td>
-                    <td>082300981234</td>
-                    <td>immfti@uad.ac.id</td>
-                    <td>
-                    <div class="inline-flex space-x-4">
-                        <!-- edit action -->
-                        <a href="#" class="flex items-center py-2 text-base font-medium text-gray-900 dark:text-white dark:hover:underline">
-                            <img src="/img/admin-edit.png" alt="Edit action" class="w-5 h-5" />
-                        </a>
-                        <!-- delete action -->
-                        <a href="#" class="flex items-center py-2 text-base font-medium text-gray-900 dark:text-white dark:hover:underline">
-                            <img src="/img/admin-trash.png" alt="Delete action" class="w-5 h-5" />
-                        </a>
-                    </div>
-                </td>
-                </tr>
+                @endforeach
             </tbody>
         </table>
     </div>

@@ -1,0 +1,115 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Mitra;
+
+class MitraController extends Controller
+{
+    public function index(){
+        $mitra=Mitra::tampilkanMitra();
+
+        return view('admin.mlodashboard', [
+            'title' => 'Mitra',
+            // 'active' => 'artikel',
+            'mitra' => $mitra,
+        ]);
+    }
+
+    public function create(){
+        return view('register', [
+            'title' => 'Register',
+            // 'active' => 'artikel',
+        ]);
+    }
+
+    public function store(Request $request){
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'email' => 'required|string|email|unique:users',
+            'no_handphone' => 'required|numeric', // Validasi nomor handphone sebagai angka
+            'password' => 'required|string|min:8|confirmed',
+            'password_confirmation' => 'required',
+        ]);
+
+        // Buat user baru
+        Mitra::create([
+            'nama' => $request->nama,
+            'email' => $request->email,
+            'no_handphone' => $request->no_handphone,
+            'password' => Hash::make($request->password),
+        ]);
+
+        // Redirect ke halaman yang diinginkan setelah berhasil daftar
+        return redirect()->route('login')->with('success', 'Registrasi berhasil! Silahkan login.');
+    }
+
+    public function edit($id)
+    {
+        $mitra = Mitra::find($id);
+
+        return view('dashboard.profilemlo', [
+            'title' => 'Edit Mitra',
+            // 'active' => 'artikel',
+            'mitra' => $mitra,
+        ]);
+    }
+
+    public function update(Request $request, string $id)
+    {
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'email' => 'required|string|email|unique:users',
+            'no_handphone' => 'required|numeric', // Validasi nomor handphone sebagai angka
+            'password' => 'required|string|min:8|confirmed',
+            'password_confirmation' => 'required',
+            'alamat' => 'string',
+            // 'gambar' => 'image|mimes:jpeg,png,jpg,gif,webp|file|max:2048',
+        ]);
+
+        $mitra = Mitra::find($id);
+
+        if (!$mitra) {
+            return redirect('dashboard/profilemlo')->with('error', 'Data tidak ditemukan');
+        }
+
+        $mitra->nama = $request->nama;
+        $mitra->email = $request->email;
+        $mitra->no_handphone = $request->no_handphone;
+        $mitra->password = Hash::make($request->password);
+        $mitra->alamat = $request->alamat;
+
+        // if ($request->hasFile('gambar')) {
+        //     $gambarLama = $artikel->gambar;
+        //     if ($gambarLama) {
+        //         Storage::delete('public/gambar/' . $gambarLama);
+        //     }
+
+        //     $fileName = $this->generateRandomString();
+        //     $extension = $request->file('gambar')->extension();
+        //     $gambarBaru = $fileName . '.' . $extension;
+
+        //     $request->file('gambar')->storeAs('public/gambar', $gambarBaru);
+        //     $artikel->gambar = $gambarBaru;
+        // }
+
+        $mitra->save();
+
+        return redirect('dashboard/profilemlo')->with('success', 'Mitra "' . $request['nama'] . '" berhasil diperbarui');
+    }
+
+    public function destroy($id)
+    {
+        $mitra = Mitra::find($id);
+        $namaMitra = $mitra->nama; // Mengambil judul artikel sebelum dihapus
+        $mitra->delete();
+
+        // if ($artikel->gambar) {
+        //     Storage::delete($artikel->gambar);
+        // }
+
+        return redirect('login')->with('danger', 'Akun  "' . $namaMitra . '" berhasil dihapus, silahkan login kembali');
+    }
+
+}

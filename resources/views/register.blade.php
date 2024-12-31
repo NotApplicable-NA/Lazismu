@@ -28,18 +28,19 @@
     </div>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form class="space-y-6" action="#" method="POST">
+        <form class="space-y-6" action="{{ route('register.store') }}" method="POST">
+        @csrf
         <div>
             <label for="nama" class="block text-sm/6 font-medium text-gray-900">Nama</label>
             <div class="mt-2">
-            <input id="nama" name="nama" type="nama" autocomplete="nama" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6">
+            <input type="text" id="nama" name="nama" class="form-control block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6" required>
         </div>
         </div>
 
         <div>
             <label for="email" class="block text-sm/6 font-medium text-gray-900">Alamat Email</label>
             <div class="mt-2">
-            <input id="email" name="email" type="email" autocomplete="email" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6">
+            <input type="email" id="email" name="email" autocomplete="email" class="form-control block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6" required>
         </div>
         </div>
 
@@ -47,13 +48,12 @@
             <label for="nohp" class="block text-sm/6 font-medium text-gray-900">No. Handphone</label>
             <div class="mt-2">
                 <input 
-                id="nohp" 
-                name="nohp" 
-                type="tel" 
-                autocomplete="tel" 
+                name="no_hp" 
+                id="no_hp" 
+                type="text" 
                 required 
                 pattern="^[1-9][0-9]{9,14}$" 
-                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
+                class="form-control block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
                 title="Nomor handphone harus terdiri dari 10 hingga 15 digit dan tidak boleh diawali dengan 0."
                 >
             </div>
@@ -65,20 +65,20 @@
                 <label for="password" class="block text-sm/6 font-medium text-gray-900">Password</label>
             </div>
             <div class="mt-2">
-                <input id="password" name="password" type="password" autocomplete="current-password" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6">
+                <input id="password" name="password" type="password" required class="form-control ">
             </div>
             </div>
 
             <div class="mt-4">
             <label for="confirm-password" class="block text-sm/6 font-medium text-gray-900">Konfirmasi Password</label>
             <div class="mt-2">
-                <input id="confirm-password" name="confirm-password" type="password" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6">
+                <input name="password_confirmation" id="password_confirmation" type="password" required class="form-control block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6">
             </div>
             </div>
 
 
       <div>
-        <button type="submit" class="flex w-full justify-center rounded-md bg-black px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-gray-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black" onclick="window.location.href='/dashboard/dashboardmlo';">Daftar</button>
+        <button type="submit" class="flex w-full justify-center rounded-md bg-black px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-gray-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black">Daftar</button>
       </div>
     </form>
 

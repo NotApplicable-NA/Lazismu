@@ -27,7 +27,7 @@
         <!-- Konten card -->
         <div class="flex flex-col">
             <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-800">Selamat Datang</h5>
-            <p class="text-gray-700">Hai User1234, Selamat datang di sistem Pelayanan lazismu daerah istimewa yogyakarta.</p>
+            <p class="text-gray-700">Hai {{ Auth::user()->nama ?? 'Guest' }}, Selamat datang di sistem Pelayanan lazismu daerah istimewa yogyakarta.</p>
         </div>
     </div>
 </div>
@@ -36,31 +36,59 @@
         <div class="card-body p-4">
             <!-- Centered Profile Picture -->
             <div class="d-flex flex-column align-items-center text-center mb-4">
-                <img src="https://via.placeholder.com/150" alt="Profile Picture" class="rounded-circle shadow" style="width: 150px; height: 150px; object-fit: cover;">
-                <h5 class="mt-3">Budiono Siregar - Program</h5>
+                <img src="{{ Auth::user()->profile_picture ? asset('uploads/profile_pictures/' . Auth::user()->profile_picture) : asset('uploads/default-profile.png') }}" 
+                alt="Profile Picture" 
+                class="rounded-circle shadow" 
+                style="width: 150px; height: 150px; object-fit: cover;">
+                <h5 class="mt-3">{{ Auth::user()->nama ?? 'Guest' }}</h5>
             </div>
 
             <!-- Profile Form -->
-            <form>
+            <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
                 <div class="mb-3">
                     <label for="nama" class="form-label">Nama</label>
-                    <input type="text" class="form-control" id="nama" value="Budiono Siregar">
+                    <input type="text" name="nama" class="form-control" id="nama" value="{{ old('nama', Auth::user()->nama) }}">
+                    @error('nama')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">Email *</label>
-                    <input type="email" class="form-control" id="email" value="BudionoSiregar@gmail.com">
+                    <input type="email" name="email" class="form-control" id="email" value="{{ Auth::user()->email ?? 'guest@example.com' }}">
+                    @error('email')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="mb-3">
                     <label for="no-telp" class="form-label">No Telp</label>
-                    <input type="text" class="form-control" id="no-telp" value="0264622310">
+                    <input type="text" name="no_hp" class="form-control" id="no_telp"
+                    value="{{ substr(Auth::user()->no_hp ?? '', 0, 1) === '0' ? Auth::user()->no_hp : '0' . (Auth::user()->no_hp ?? '') }}">
+                    @error('no_hp')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="mb-3">
                     <label for="address" class="form-label">Address</label>
-                    <input type="text" class="form-control" id="address" value="Yogyakarta">
+                    <input type="text" name="alamat" class="form-control" id="address" value="{{ Auth::user()->alamat ?? 'Yogyakarta' }}">
+                    @error('alamat')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" value="********">
+                    <input type="password" name="password" class="form-control" id="password">
+                    @error('password')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="mb-3">
+                    <label for="profile_picture" class="form-label">Profile Picture</label>
+                    <input type="file" name="profile_picture" class="form-control" id="profile_picture">
+                    @error('profile_picture')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
                 <button type="submit" class="btn btn-danger w-100">Save</button>
             </form>

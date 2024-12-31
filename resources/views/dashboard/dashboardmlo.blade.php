@@ -29,7 +29,7 @@
         <!-- Konten card -->
         <div class="flex flex-col">
             <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-800">Selamat Datang</h5>
-            <p class="text-gray-700">Hai User1234, Selamat datang di sistem Pelayanan lazismu daerah istimewa yogyakarta.</p>
+            <p class="text-gray-700">Hai {{ Auth::user()->nama ?? 'Guest' }}, Selamat datang di sistem Pelayanan lazismu daerah istimewa yogyakarta.</p>
         </div>
     </div>
 </div>
