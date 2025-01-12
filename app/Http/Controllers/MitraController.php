@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Mitra;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class MitraController extends Controller
 {
@@ -62,10 +63,11 @@ class MitraController extends Controller
     }
 
     // Method to update an existing Mitra record
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
-        $user = Auth::user(); // Ambil user yang login
-
+        // Ambil mitra berdasarkan id
+        $mitra = Mitra::findOrFail($id);
+    
         // Validasi input
         $request->validate([
             'nama' => 'required|string|max:255',
@@ -91,28 +93,52 @@ class MitraController extends Controller
             'profile_picture.mimes' => 'Gambar harus bertipe: jpeg, png, jpg.',
             'profile_picture.max' => 'Ukuran gambar maksimal 2MB.',
         ]);
-
+    
         // Ambil semua input
         $data = $request->only(['nama', 'email', 'no_hp', 'alamat']);
-
+    
+        // Jika password diubah, hash password
+        if ($request->filled('password')) {
+            $data['password'] = bcrypt($request->input('password'));
+        }
+    
         // Hapus gambar lama dan simpan gambar baru jika ada
         if ($request->hasFile('profile_picture')) {
-            if ($user->profile_picture && file_exists(public_path('uploads/profile_pictures/' . $user->profile_picture))) {
-                unlink(public_path('uploads/profile_pictures/' . $user->profile_picture));
+            if ($mitra->profile_picture && file_exists(public_path('uploads/profile_pictures/' . $mitra->profile_picture))) {
+                unlink(public_path('uploads/profile_pictures/' . $mitra->profile_picture));
             }
-
+    
             $file = $request->file('profile_picture');
             $filename = time() . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('uploads/profile_pictures'), $filename);
             $data['profile_picture'] = $filename;
         }
-
-        // Update data user
-        $user->update($data);
-
+    
+        // Update data mitra
+        $mitra->update($data);
+    
         return redirect()->back()->with('success', 'Profile updated successfully!');
     }
+    public function resetPassword(Request $request, $id)
+        {
+            $request->validate([
+                'password' => 'required|min:8|confirmed',
+            ]);
 
+            $mitra = Mitra::findOrFail($id);
+            $mitra->password = $request->password;
+            $mitra->save();
+
+            return redirect()->route('mitra.login')->with('status', 'Password berhasil direset.');
+        }
+
+    
+    public function showResetForm($id)
+    {
+        $mitra = Mitra::findOrFail($id); // Ambil data mitra berdasarkan ID
+        return view('auth.reset-password', compact('mitra')); // Kirim data mitra ke view
+    }
+    
     // Method to delete a Mitra record
     public function destroy($id)
     {

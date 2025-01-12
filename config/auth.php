@@ -15,7 +15,7 @@ return [
 
     'defaults' => [
         'guard' => env('AUTH_GUARD', 'web'),
-        'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
+        'passwords' => env('AUTH_PASSWORD_BROKER', 'mitras'),
     ],
 
     /*
@@ -40,6 +40,10 @@ return [
             'driver' => 'session',
             'provider' => 'mitras',
         ],
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins',
+        ],
     ],
 
     /*
@@ -63,6 +67,10 @@ return [
         'mitras' => [
         'driver' => 'eloquent',
         'model' => App\Models\Mitra::class,
+        ],
+        'admins' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\Admin::class,
         ],
 
         // 'users' => [
@@ -93,7 +101,7 @@ return [
     'passwords' => [
         'mitras' => [
             'provider' => 'mitras',
-            'table' => 'password_reset_tokens',
+            'table' => 'password_reset_mitras',
             'expire' => 60,
             'throttle' => 60,
         ],

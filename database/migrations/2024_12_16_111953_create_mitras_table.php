@@ -19,9 +19,18 @@ return new class extends Migration
             $table->string('email');
             $table->string('alamat');
             $table->boolean('status');
+            $table->rememberToken();
             $table->timestamps();
         });
+
+        Schema::create('password_reset_mitras', function (Blueprint $table) {
+            $table->string('email')->primary();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
+        });
     }
+
+    
 
     /**
      * Reverse the migrations.
