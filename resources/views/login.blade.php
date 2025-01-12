@@ -25,7 +25,23 @@
             <div class="sm:mx-auto sm:w-full sm:max-w-sm">
               <h1 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">MASUK</h1>
     </div>
+<!-- Status Message -->
+@if (session('status'))
+<div class="alert alert-success text-center">
+    {{ session('status') }}
+</div>
+@endif
 
+<!-- Error Message -->
+@if ($errors->any())
+<div class="alert alert-danger">
+    <ul class="mb-0">
+        @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
     <form class="space-y-6" action="{{ route('mitra.login') }}" method="POST">
     @csrf
@@ -40,7 +56,7 @@
         <div class="flex items-center justify-between">
           <label for="password" class="block text-sm/6 font-medium text-gray-900">Password</label>
           <div class="text-sm">
-              <a href="#" class="font-semibold text-black hover:text-gray-800">Lupa Password?</a>
+              <a href="/forgot-password" class="font-semibold text-black hover:text-gray-800">Lupa Password?</a>
           </div>
         </div>
         <div class="mt-2">

@@ -113,17 +113,47 @@
                   <img class="w-8 h-8 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" alt="user photo">
               </button>
               <!-- Dropdown menu -->
+              <!-- Sidebar untuk Mitras dan Admin -->
               <div class="hidden z-50 my-4 w-56 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown">
-                  <div class="py-3 px-4">
-                      <span class="block text-sm font-semibold text-gray-900 dark:text-black">Budiono Siregar</span>
-                      <span class="block text-sm text-gray-500 truncate dark:text-gray-400">siregrar@google.com</span>
-                  </div>
-                  <ul class="py-1 text-gray-500 dark:text-gray-400" aria-labelledby="dropdown">
-                      <li>
-                          <a href="#" class="block py-2 px-4 text-sm text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">Sign out</a>
-                      </li>
-                  </ul>
+                <div class="py-3 px-4">
+                    <!-- Cek Auth -->
+                    @if(Auth::guard('admin')->check())
+                        <!-- Untuk Admin -->
+                        <span class="block text-sm font-semibold text-gray-900 dark:text-black">
+                            {{ Auth::guard('admin')->user()->nama ?? 'Admin' }}
+                        </span>
+                        <span class="block text-sm text-gray-500 truncate dark:text-gray-400">
+                            {{ Auth::guard('admin')->user()->email ?? 'admin@example.com' }}
+                        </span>
+                    @elseif(Auth::guard('mitras')->check())
+                        <!-- Untuk Mitras -->
+                        <span class="block text-sm font-semibold text-gray-900 dark:text-black">
+                            {{ Auth::guard('mitras')->user()->nama ?? 'Mitra' }}
+                        </span>
+                        <span class="block text-sm text-gray-500 truncate dark:text-gray-400">
+                            {{ Auth::guard('mitras')->user()->email ?? 'mitra@example.com' }}
+                        </span>
+                    @else
+                        <!-- Default untuk Guest -->
+                        <span class="block text-sm font-semibold text-gray-900 dark:text-black">Guest</span>
+                        <span class="block text-sm text-gray-500 truncate dark:text-gray-400">guest@example.com</span>
+                    @endif
+                </div>
+                <!-- Logout -->
+                <ul class="py-1 text-gray-500 dark:text-gray-400" aria-labelledby="dropdown">
+                    <li>
+                        <form method="POST" action="{{ Auth::guard('admin')->check() ? route('admin.logout') : route('mitras.logout') }}">
+                            @csrf
+                            <button type="submit" class="block py-2 px-4 text-sm text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                Logout
+                            </button>
+                        </form>
+                    </li>
+                </ul>
               </div>
+
+
+
           </div>
         </div>
     </div>
