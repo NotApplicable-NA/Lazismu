@@ -29,40 +29,74 @@
                 <!-- Set padding pada setiap row -->
                 <div class="row py-2">
                     <div class="col-4">Judul Proposal</div>
-                    <div class="col-8">: Proposal pengajuan dana UMKM</div>
+                    <div class="col-8">: {{ $proposal->judul }}</div>
                 </div>
                 <div class="row py-2">
                     <div class="col-4">Nama Instansi / Individu</div>
-                    <div class="col-8">: Alex Setiawan</div>
+                    <div class="col-8">: {{ $proposal->mitra->nama }}</div>
                 </div>
                 <div class="row py-2">
                     <div class="col-4">Kategori</div>
-                    <div class="col-8">: Sosial</div>
+                    <div class="col-8">: {{ $proposal->kategori }}</div>
                 </div>
                 <div class="row py-2">
                     <div class="col-4">Lokasi</div>
-                    <div class="col-8">: Bantul</div>
+                    <div class="col-8">: {{ $proposal->mitra->alamat }}</div>
                 </div>
                 <div class="row py-2">
                     <div class="col-4">Tanggal</div>
-                    <div class="col-8">: 23 Desember 2024</div>
+                    <div class="col-8">: {{ $proposal->tgl_masuk }}</div>
                 </div>
                 <div class="row py-2">
                     <div class="col-4">Status</div>
                     <div class="col-8">
-                        : <span class="badge-yellow-orange">Isi Persyaratan</span>
+                        : <span class="badge-yellow-orange">{{$proposal->status}}</span>
                     </div>
                 </div>
                 <div class="row py-2">
                     <div class="col-4">File Proposal</div>
                     <div class="col-8">
-                        : <a href="#" class="badge-blue">file.pdf</a>
+                        : @if($proposal->file)
+                        <a href="{{ asset('storage/proposals/' . $proposal->file) }}" target="_blank" 
+                        class="text-blue-500 hover:underline">
+                            Buka File Proposal
+                        </a>
+                        @else
+                            <p class="text-gray-500">Tidak ada file proposal yang tersedia.</p>
+                        @endif
                     </div>
                 </div>
                 <div class="row py-2">
                 <div class="col-4">LPJ</div>
                 <div class="col-8">
-                    : <a href="/dashboard/lpjmitra" class="badge-red text-decoration-none">Belum LPJ</a>
+                    @if ($proposal->status === 'Diterima' && !is_null($proposal->anggaran_disetujui))
+                        @if (!empty($lpj->status) && in_array($lpj->status, ['Pending', 'Diterima']))
+                            <div class="d-flex flex-column align-items-start">
+                                <div>:
+                                {{-- Status LPJ --}}
+                                <span class="badge-red text-decoration-none" style="opacity: 0.6; cursor: not-allowed; margin-bottom: 8px;">
+                                    {{ ucfirst($lpj->status) }}
+                                </span>
+                                </div>
+                                {{-- Tautan ke File PDF --}}
+                                @if (!empty($lpj->file_lpj)) {{-- Periksa apakah file LPJ tersedia --}}
+                                    <a href="{{ asset('storage/lpjs/' . $lpj->file_lpj) }}" target="_blank" class="badge-green text-decoration-none">
+                                        Buka File LPJ
+                                    </a>
+                                @else
+                                    <span class="badge-grey text-decoration-none" style="opacity: 0.6; cursor: not-allowed;">
+                                        File LPJ Tidak Tersedia
+                                    </span>
+                                @endif
+                            </div>
+                        @else
+                            <a href="{{ route('lpj.create', $proposal->id) }}" class="badge-red text-decoration-none">Belum LPJ</a>
+                        @endif
+                    @else
+                        <span class="badge-red text-decoration-none" style="opacity: 0.6; cursor: not-allowed;">
+                            Belum dapat upload LPJ
+                        </span>
+                    @endif
                 </div>
                 </div>
 

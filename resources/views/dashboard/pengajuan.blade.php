@@ -25,48 +25,43 @@
                 <h3 class="card-title text-center mb-4">Data Pengajuan Proposal</h3>
                 <p class="text-center">Silahkan isi data Proposal anda dibawah ini</p>
                 
-                <form>
+                <form action="{{ route('proposal.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf <!-- Token CSRF untuk keamanan -->
                     <!-- Judul Proposal -->
                     <div class="mb-3">
                         <label for="judulProposal" class="form-label">Judul Proposal</label>
-                        <input type="text" class="form-control" id="judulProposal" placeholder="Masukkan judul proposal">
+                        <input type="text" class="form-control" name="judul" id="judulProposal" placeholder="Masukkan judul proposal" required>
                     </div>
-                    
                     <!-- Kategori -->
                     <div class="mb-3">
                         <label for="kategori" class="form-label">Kategori</label>
-                        <select class="form-select" id="kategori">
-                            <option selected>-Pilih Kategori-</option>
+                        <select class="form-select" name="kategori" id="kategori" required>
+                            <option value="" selected>-Pilih Kategori-</option>
                             <option value="Individu">Individu</option>
                             <option value="Organisasi">Organisasi</option>
                         </select>
                     </div>
-
                     <!-- Kontak -->
                     <div class="mb-3">
                         <label for="kontak" class="form-label">Kontak</label>
-                        <input type="text" class="form-control" id="kontak" placeholder="Masukkan kontak anda">
+                        <input type="text" class="form-control" name="kontak" id="kontak" placeholder="Masukkan kontak anda" required>
                     </div>
-                    
                     <!-- Tanggal -->
                     <div class="mb-3">
                         <label for="tanggal" class="form-label">Tanggal</label>
-                        <input type="date" class="form-control" id="tanggal">
+                        <input type="date" class="form-control" name="tgl_masuk" id="tanggal" required>
                     </div>
-                    
                     <!-- Anggaran -->
                     <div class="mb-3">
                         <label for="anggaran" class="form-label">Anggaran</label>
-                        <input type="text" class="form-control" id="anggaran" placeholder="Masukkan anggaran yang dibutuhkan">
+                        <input type="number" class="form-control" name="anggaran_diajukan" id="anggaran" placeholder="Masukkan anggaran yang dibutuhkan" required>
                     </div>
-
                     <!-- File Proposal -->
                     <div class="mb-3">
                         <label for="fileProposal" class="form-label">File Proposal</label>
-                        <input type="file" class="form-control" id="fileProposal">
+                        <input type="file" class="form-control" name="file" id="fileProposal">
                     </div>
-
-                    <!-- Button Kirim (Posisi Kanan) -->
+                    <!-- Button Kirim -->
                     <div class="text-end">
                         <button type="submit" class="btn btn-primary">Kirim</button>
                     </div>

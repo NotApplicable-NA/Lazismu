@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MitraController;
+use App\Http\Controllers\ProposalController;
+use App\Http\Controllers\LPJController;
 
 Route::middleware('web')->group(function () {
     Route::post('/login', [MitraController::class, 'login'])->name('mitra.login');
@@ -29,13 +31,10 @@ Route::get('/register', function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard/dashboardmlo', function () {
-        return view('dashboard.dashboardmlo');
-    });
 
-    Route::get('/dashboard/proposal', function () {
-        return view('dashboard.proposal');
-    });
+    Route::get('/dashboard/dashboardmlo', [ProposalController::class, 'index'])->name('dashboardmlo.index');
+
+    Route::get('/dashboard/proposal', [ProposalController::class, 'index'])->name('proposal.index');
 
     Route::get('/dashboard/pengajuan', function () {
         return view('dashboard.pengajuan');
@@ -45,13 +44,12 @@ Route::middleware(['auth'])->group(function () {
         return view('dashboard.profilemlo');
     });
 
-    Route::get('/dashboard/detailpengajuan', function () {
-        return view('dashboard.detailpengajuan');
-    });
+    Route::get('dashboard/detailpengajuan/{id}', [ProposalController::class, 'show'])->name('dashboard.detailpengajuan');
+
+    Route::get('dashboard/editpropo/{id}', [ProposalController::class, 'edit'])->name('dashboard.editpropo');
+    Route::put('dashboard/editpropo/{id}', [ProposalController::class, 'update'])->name('dashboard.updatepropo');
     
-    Route::get('/dashboard/editpropo', function () {
-        return view('dashboard.editpropo');
-    });
+    Route::delete('/dashboard/proposal/{id}', [ProposalController::class, 'destroy'])->name('proposal.destroy');
     
     Route::get('/dashboard/lpjmitra', function () {
         return view('dashboard.lpjmitra');
@@ -59,6 +57,12 @@ Route::middleware(['auth'])->group(function () {
 
     Route::put('/dashboard/profilemlo', [MitraController::class, 'update'])->name('profile.update');
     // Tambahkan route lain yang butuh proteksi auth
+
+    Route::post('/proposal/store', [ProposalController::class, 'store'])->name('proposal.store');
+
+    Route::get('/dashboard/lpj/create/{id}', [LPJController::class, 'create'])->name('lpj.create');
+    Route::post('/dashboard/lpj/store', [LPJController::class, 'store'])->name('lpj.store');
+
 });
 
 Route::get('/admin', function () {

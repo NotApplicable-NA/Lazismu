@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('proposals', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('id_mlo')->unsigned();
-            $table->foreign('id_mlo')->references('id')->on('mlos')->onDelete('cascade');
+            $table->bigInteger('id_mitra')->unsigned();
+            $table->foreign('id_mitra')->references('id')->on('mitras')->onDelete('cascade');
             $table->string('judul');
             $table->string('kategori');
             $table->integer('anggaran');

@@ -11,14 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mlos', function (Blueprint $table) {
+        Schema::create('l_p_j_s', function (Blueprint $table) {
             $table->id();
-            $table->string('username');
-            $table->string('password');
-            $table->string('nama');
-            $table->string('no_hp');
-            $table->string('email');
-            $table->string('alamat');
             $table->timestamps();
         });
     }
@@ -28,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('mlo');
+        Schema::dropIfExists('l_p_j_s');
     }
 };
