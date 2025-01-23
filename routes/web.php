@@ -41,11 +41,14 @@ Route::post('/adminregister', [AdminAuthController::class, 'register']);
 Route::post('/adminlogout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
 // Hanya untuk admin yang login
+logger()->info('Route admin.admindashboard is being registered');
 Route::middleware('auth:admin')->group(function () {
     Route::get('/admin/admindashboard', function () {
+        logger()->info('Route admin.admindashboard accessed');
         return view('admin.admindashboard');
     })->name('admin.admindashboard');
 });
+
 
 Route::post('/logout', function () {
     Auth::logout();
@@ -66,13 +69,13 @@ Route::get('/editpengajuan', function () {
     return view('dashboard.editpropo');
 });
 
-Route::get('/admindashboard', function () {
-    return view('admin.admindashboard');
-});
+// Route::get('/admindashboard', function () {
+//     return view('admin.admindashboard');
+// });
 
-Route::get('/admin/admindashboard', [MitraController::class, 'indexcount'])->name('mlos.indexcount');
+Route::get('/admin/admindashboard', [MitraController::class, 'index'])->name('mlos.indexcount');
 Route::post('/admin/admindashboard', [MitraController::class, 'store'])->name('mlos.store');
-Route::get('/admindashboard/{id}', [MitraController::class, 'showcount'])->name('mlos.showcount');
+Route::get('/admindashboard/{id}', [MitraController::class, 'show'])->name('mlos.showcount');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/dashboardmlo', function () {
