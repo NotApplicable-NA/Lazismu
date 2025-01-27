@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MitraController;
+use App\Http\Controllers\ProposalController;
+use App\Http\Controllers\LPJController;
 use App\Mail\resetpass;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
@@ -108,6 +110,12 @@ Route::middleware(['auth'])->group(function () {
 
     Route::put('/dashboard/profilemlo', [MitraController::class, 'update'])->name('profile.update');
     // Tambahkan route lain yang butuh proteksi auth
+
+    Route::post('/proposal/store', [ProposalController::class, 'store'])->name('proposal.store');
+
+    Route::get('/dashboard/lpj/create/{id}', [LPJController::class, 'create'])->name('lpj.create');
+    Route::post('/dashboard/lpj/store', [LPJController::class, 'store'])->name('lpj.store');
+
 });
 
 // Route::get('/admin/dashboardadmin', function () {

@@ -22,6 +22,11 @@ class Mitra extends Authenticatable
         'profile_picture',
     ];
 
+    public function proposals()
+    {
+        return $this->hasMany(Proposal::class, 'id_mitra', 'id');
+    }
+
     // Automatically hash password when setting it
     public function setPasswordAttribute($value)
     {

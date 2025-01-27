@@ -26,58 +26,78 @@
                 <h3 class="card-title text-center mb-4">Laporan Pertanggung Jawaban</h3>
                 <p class="text-center">Silahkan isi Laporan Pertanggun Jawaban anda dibawah ini</p>
                 
-                <form>
-                    <!-- Judul Proposal -->
-                    <div class="mb-3">
-                        <label for="judulProposal" class="form-label">Judul Proposal</label>
-                        <input type="text" class="form-control" id="judulProposal" value="Musyawarah Komisariat">
-                    </div>
-                    
-                    <!-- Nama Proposal -->
-                    <div class="mb-3">
-                        <label for="judulProposal" class="form-label">Nama Instansi</label>
-                        <input type="text" class="form-control" id="namaProposal" value="PT. Mitra Jaya Indonesia">
+                <form action="{{ route('lpj.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="id_proposal" value="{{ $proposal->id }}">
+                    <input type="hidden" name="judul_lpj" value="{{ $proposal->judul }}">
+                    <input type="hidden" name="nama_instansi" value="{{ $proposal->mitra->nama }}">
+                    <input type="hidden" name="dana_disetujui" value="{{ $proposal->anggaran_disetujui }}">
+
+                    <div class="row mb-2 align-items-center">
+                        <label class="col-3 form-label">Judul Proposal</label>
+                        <div class="col-9 ps-0">
+                            <p class="form-control-plaintext mb-0">{{ $proposal->judul }}</p>
+                        </div>
                     </div>
 
-                    <!-- PEMASUKAN -->
-                    <div class="mb-3">
-                        <label for="kontak" class="form-label fw-bold">PEMASUKAN</label>
-                    </div>
-                    
-                    <!-- DANA DISETUJUI -->
-                    <div class="mb-3">
-                        <label for="danadisetujui" class="form-label">Dana Disetujui</label>
-                        <input type="int" class="form-control" id="danadisetujui" value="10.000.000" readonly>
-                    </div>
-                    
-                    <!-- TOTAL PENGELUARAN -->
-                    <div class="mb-3">
-                        <label for="totalpengeluaran" class="form-label">Total Pengeluaran</label>
-                        <input type="text" class="form-control" id="totalpengeluaran">
+                    <div class="row mb-2 align-items-center">
+                        <label class="col-3 form-label">Nama Instansi / Individu</label>
+                        <div class="col-9 ps-0">
+                            <p class="form-control-plaintext mb-0">{{ $proposal->mitra->nama }}</p>
+                        </div>
                     </div>
 
-                    <!-- File LPJ -->
-                    <div class="mb-3">
-                        <label for="fileLPJ" class="form-label">File LPJ</label>
-                        <input type="file" class="form-control" id="fileLPJ">
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            PEMASUKAN
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="catatanLPJ" class="form-label">Catatan LPJ</label>
-                        <textarea class="form-control" id="catatanLPJ" rows="3" placeholder="Tulis Keterangan File LPJ"></textarea>
+                    <div class="row mb-4 align-items-center">
+                        <label class="col-3 form-label">Dana Disetujui</label>
+                        <div class="col-9 ps-0">
+                            <p class="form-control-plaintext mb-0">{{ $proposal->anggaran_disetujui }}</p>
+                        </div>
                     </div>
 
-                    <!-- File Bukti sisa dana -->
-                    <div class="mb-3">
-                        <label for="sisadana" class="form-label">Bukti Sisa Dana</label>
-                        <input type="file" class="form-control" id="sisadana">
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            PENGELUARAN
+                        </div>
                     </div>
 
-                    <!-- Button Kirim (Posisi Kanan) -->
-                    <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Kirim</button>
+                    <div class="row mb-3 align-items-center">
+                        <label for="total_pengeluaran" class="col-3 form-label">Total Pengeluaran</label>
+                        <div class="col-9 ps-0">
+                            <input type="number" class="form-control" name="total_pengeluaran" id="total_pengeluaran">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3 align-items-center">
+                        <label for="file_lpj" class="col-3 form-label">File LPJ</label>
+                        <div class="col-9 ps-0">
+                            <input type="file" class="form-control" name="file_lpj" id="file_lpj" accept="application/pdf">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3 align-items-center">
+                        <div class="col-12 ps-0">
+                            <textarea class="form-control" name="keterangan_lpj" id="keterangan_lpj" rows="3" placeholder="Tulis Keterangan File LPJ (Opsional)"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row mb-5 align-items-center">
+                        <label for="file_bukti_sisa_dana" class="col-3 form-label">Bukti Sisa Dana</label>
+                        <div class="col-9 ps-0">
+                            <input type="file" class="form-control" name="file_bukti_sisa_dana" id="file_bukti_sisa_dana" accept="application/pdf">
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-success">Simpan LPJ</button>
                     </div>
                 </form>
+
             </div>
         </div>
     </div>
