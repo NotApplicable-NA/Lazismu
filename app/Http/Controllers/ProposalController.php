@@ -69,7 +69,7 @@ class ProposalController extends Controller
             'anggaran_diajukan' => $validated['anggaran_diajukan'],
             'tgl_masuk' => $validated['tgl_masuk'],
             'file' => $fileName,
-            'status' => 'Pending', // Nilai default untuk kolom status
+            'status' => 'Masuk', // Nilai default untuk kolom status
         ]);
 
         // Redirect ke halaman dengan pesan sukses
