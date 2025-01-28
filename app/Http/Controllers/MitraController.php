@@ -26,6 +26,11 @@ class MitraController extends Controller
         ]);
     }
 
+    public function showLoginForm()
+    {
+        return view('login'); // Sesuaikan dengan lokasi view Anda
+    }
+
     // Method to fetch all Mitra records
     public function index()
     {

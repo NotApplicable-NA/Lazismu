@@ -13,8 +13,17 @@ class AdminAuthenticate
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle($request, Closure $next)
     {
+        if (!Auth::guard('admin')->check()) {
+            logger()->info('User not authenticated in auth:admin middleware', [
+                'path' => $request->path(),
+            ]);
+
+            return redirect()->route('admin.login');
+        }
+
         return $next($request);
     }
+
 }

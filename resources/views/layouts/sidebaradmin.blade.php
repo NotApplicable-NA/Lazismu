@@ -171,7 +171,7 @@
       <!-- DASHBOARD -->
       <li class="border-b border-gray-300">
         <a
-          href="/admin/dashboardadmin"
+          href="/admin/dashboard"
           class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-[#F2CC89] group no-underline"
         >
         <img
@@ -187,7 +187,7 @@
       <!-- MLO -->
       <li class="border-b border-gray-300">
         <a
-          href="/admin/mlodashboard"
+          href="/{{ Auth::guard('admin')->user()->role }}/mitramanager"
           class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-[#F2CC89] group no-underline"
         >
         <img
@@ -234,25 +234,256 @@
             <ul id="dropdown-pages" class="hidden py-2 space-y-2">
               <li>
                 <a
-                  href="/admin/proposaldashboard"
+                  href="/{{ Auth::guard('admin')->user()->role }}/proposalmanager"
                   class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-[#F2CC89] dark:text-white dark:hover:bg-gray-700 no-underline"
                   >Proposal</a
                 >
               </li>
               <li>
                 <a
-                  href="/admin/lpj"
+                  href="/{{ Auth::guard('admin')->user()->role }}/lpjmanager"
                   class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-[#F2CC89] dark:text-white dark:hover:bg-gray-700 no-underline"
                   >LPJ</a
                 >
               </li>
             </ul>
           </li>
+          <!-- Sidebar Buat BP-->
+          @if(Auth::guard('admin')->user()->role === 'BP')
+            <li class="border-b border-gray-300">
+            <a
+              href="/bp/bp"
+              class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-[#F2CC89] group no-underline"
+            >
+            <img
+                aria-hidden="true"
+                class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                src="/img/admin2.png"  
+                alt="Icon Description"
+                />
+              <span class="ml-3">Badan Pengurus</span>
+            </a>
+          </li>
+
+          <!-- MANAGEMENT USER -->
+          <li class="border-b border-gray-300">
+            <a
+              href="/bp/managementuserbp"
+              class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-[#F2CC89] group no-underline"
+            >
+            <img
+                aria-hidden="true"
+                class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                src="/img/manuser.png"  
+                alt="Icon Description"
+                />
+              <span class="ml-3">Management User</span>
+            </a>
+          </li>
+          @endif
+
+          <!-- Navbar Buat Front Office -->
+          @if(Auth::guard('admin')->user()->role === 'Frontoffice')
+            <li class="border-b border-gray-300">
+              <a
+                href="/frontoffice/frontoffice"
+                class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-[#F2CC89] group no-underline"
+              >
+              <img
+                  aria-hidden="true"
+                  class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                  src="/img/admin2.png"  
+                  alt="Icon Description"
+                  />
+                <span class="ml-3">Front-Office</span>
+              </a>
+            </li>
+          @endif
+
+          <!-- Navbar Buat Keuangan -->
+          @if(Auth::guard('admin')->user()->role === 'Keuangan')
+            <li class="border-b border-gray-300">
+              <a
+                href="/keuangan/keuangan"
+                class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-[#F2CC89] group no-underline"
+              >
+              <img
+                  aria-hidden="true"
+                  class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                  src="/img/admin2.png"  
+                  alt="Icon Description"
+                  />
+                <span class="ml-3">Keuangan</span>
+              </a>
+            </li>
+          @endif
+
+          <!-- Navbar Buat Manager -->
+            @if(Auth::guard('admin')->user()->role === 'Manager')
+              <li class="border-b border-gray-300">
+                <a
+                  href="/manager/manager"
+                  class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-[#F2CC89] group no-underline"
+                >
+                <img
+                    aria-hidden="true"
+                    class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                    src="/img/admin2.png"  
+                    alt="Icon Description"
+                    />
+                  <span class="ml-3">Manager</span>
+                </a>
+              </li>
+
+              <!-- MANAGEMENT USER -->
+              <li class="border-b border-gray-300">
+                <a
+                  href="/manager/managementusermanager"
+                  class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-[#F2CC89] group no-underline"
+                >
+                <img
+                    aria-hidden="true"
+                    class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                    src="/img/manuser.png"  
+                    alt="Icon Description"
+                    />
+                  <span class="ml-3">Management User</span>
+                </a>
+              </li>
+            @endif
+
+            <!-- Navbar Buat Program -->
+            @if(Auth::guard('admin')->user()->role === 'Program')
+              <li class="border-b border-gray-300">
+                <a
+                  href="/program/program"
+                  class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-[#F2CC89] group no-underline"
+                >
+                <img
+                    aria-hidden="true"
+                    class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                    src="/img/admin2.png"  
+                    alt="Icon Description"
+                    />
+                  <span class="ml-3">Program</span>
+                </a>
+              </li>
+            @endif
+
+            <!-- Navbar Buat SUPERADMIN ONLY FOR DEVELOPMENT -->
+            @if(Auth::guard('admin')->user()->role === 'superadmin')
+              <li class="border-b border-gray-300">
+              <a
+                href="/bp/bp"
+                class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-[#F2CC89] group no-underline"
+              >
+              <img
+                  aria-hidden="true"
+                  class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                  src="/img/admin2.png"  
+                  alt="Icon Description"
+                  />
+                <span class="ml-3">Badan Pengurus</span>
+              </a>
+            </li>
+
+            <!-- MANAGEMENT USER -->
+            <li class="border-b border-gray-300">
+              <a
+                href="/bp/managementuserbp"
+                class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-[#F2CC89] group no-underline"
+              >
+              <img
+                  aria-hidden="true"
+                  class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                  src="/img/manuser.png"  
+                  alt="Icon Description"
+                  />
+                <span class="ml-3">Management User</span>
+              </a>
+            </li>
+
+              <li class="border-b border-gray-300">
+                <a
+                  href="/frontoffice/frontoffice"
+                  class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-[#F2CC89] group no-underline"
+                >
+                <img
+                    aria-hidden="true"
+                    class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                    src="/img/admin2.png"  
+                    alt="Icon Description"
+                    />
+                  <span class="ml-3">Front-Office</span>
+                </a>
+              </li>
+
+              <li class="border-b border-gray-300">
+                <a
+                  href="/keuangan/keuangan"
+                  class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-[#F2CC89] group no-underline"
+                >
+                <img
+                    aria-hidden="true"
+                    class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                    src="/img/admin2.png"  
+                    alt="Icon Description"
+                    />
+                  <span class="ml-3">Keuangan</span>
+                </a>
+              </li>
+
+              <li class="border-b border-gray-300">
+                <a
+                  href="/manager/manager"
+                  class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-[#F2CC89] group no-underline"
+                >
+                <img
+                    aria-hidden="true"
+                    class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                    src="/img/admin2.png"  
+                    alt="Icon Description"
+                    />
+                  <span class="ml-3">Manager</span>
+                </a>
+              </li>
+
+              <!-- MANAGEMENT USER -->
+              <li class="border-b border-gray-300">
+                <a
+                  href="/manager/managementuser"
+                  class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-[#F2CC89] group no-underline"
+                >
+                <img
+                    aria-hidden="true"
+                    class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                    src="/img/manuser.png"  
+                    alt="Icon Description"
+                    />
+                  <span class="ml-3">Management User</span>
+                </a>
+              </li>
+              <li class="border-b border-gray-300">
+                <a
+                  href="/program/program"
+                  class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-[#F2CC89] group no-underline"
+                >
+                <img
+                    aria-hidden="true"
+                    class="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                    src="/img/admin2.png"  
+                    alt="Icon Description"
+                    />
+                  <span class="ml-3">Program</span>
+                </a>
+              </li>
+            @endif
+      
 
       <!-- SETTING -->
       <li class="border-b border-gray-300">
         <a
-          href="/admin/profileadmin"
+          href="/{{ Auth::guard('admin')->user()->role }}/setting"
           class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-[#F2CC89] group no-underline"
         >
         <img

@@ -23,13 +23,14 @@
     <aside class="sidebar bg-dark text-white p-3" style="width: 250px;">
         @include('layouts.sidebaradmin')
     </aside>
+    
 
     <!-- Main Content -->
     <div class="flex-grow-1" style="margin-left: 250px;">
         <div class="container py-8 px-4">
             <!-- Header -->
                 <header class="mb-4 mt-5">
-                    <h1 class="fw-bold fs-5">Manager Dashboard</h1>
+                    <h1 class="fw-bold fs-5">{{ Auth::guard('admin')->user()->role }} Dashboard</h1>
                     <hr class="custom-underline">
                 </header>
 
@@ -107,6 +108,8 @@
 </body>
 
 <script>
+
+
     // Ambil data dari backend
     fetch('/get-chart-data')
         .then(response => response.json())

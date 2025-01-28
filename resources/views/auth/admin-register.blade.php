@@ -62,9 +62,15 @@
         <div>
             <label for="role" class="block text-sm/6 font-medium text-gray-900">Role</label>
             <div class="mt-2">
-            <input type="text" id="role" name="role" class="form-control block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6" required>
-        </div>
-        </div>
+                <select id="role" name="role" class="form-control block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6" required>
+                    <option value="" disabled selected>Pilih Role</option>
+                    <option value="Manager">Manager</option>
+                    <option value="Frontoffice">Frontoffice</option>
+                    <option value="Program">Program</option>
+                    <option value="Keuangan">Keuangan</option>
+                </select>
+            </div>
+        </div>     
 
         <div>
             <div class="flex items-center justify-between">

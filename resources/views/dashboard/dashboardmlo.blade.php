@@ -120,7 +120,7 @@
                         </td>
                         <td class="px-6 py-4">
                             <div class="inline-flex space-x-4">
-                                <a href="#" class="flex items-center py-2 text-base font-medium text-gray-900 hover:underline">
+                                <a href="{{ route('dashboard.detailpengajuan', $proposal->id) }}" class="flex items-center py-2 text-base font-medium text-gray-900 hover:underline">
                                     <img src="/img/read_action.png" alt="Read action" class="w-5 h-5" />
                                 </a>
                                 @if($proposal->status === 'Masuk')

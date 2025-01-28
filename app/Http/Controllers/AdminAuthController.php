@@ -45,26 +45,27 @@ public function showRegisterForm()
 
    // Login
    public function login(Request $request)
-   {
-       $credentials = $request->validate([
-           'username' => 'required|string',
-           'password' => 'required|string',
-       ]);
+    {
+        $credentials = $request->validate([
+            'username' => 'required|string',
+            'password' => 'required|string',
+        ]);
+        if (Auth::guard('admin')->attempt($credentials)) {
+            $request->session()->regenerate();
 
-       if (Auth::guard('admin')->attempt($credentials)) {
-        $request->session()->regenerate();
-        logger()->info('Admin berhasil login', ['username' => $request->username]);
-        return redirect()->route('admin.admindashboard')->with('success', 'Login successful.');
-    } else {
-        logger()->error('Login gagal', ['username' => $request->username]);
+            // Ambil role admin yang login
+            $role = Auth::guard('admin')->user()->role;
+
+            // Redirect ke rute dengan parameter
+            return redirect()->route('admin.dashboard');
+        }
+
+        // Jika login gagal
+        return back()->withErrors([
+            'username' => 'The provided credentials do not match our records.',
+        ]);
     }
-    
-    
 
-       return back()->withErrors([
-           'username' => 'The provided credentials do not match our records.',
-       ]);
-   }
 
    // Logout
    public function logout(Request $request)
