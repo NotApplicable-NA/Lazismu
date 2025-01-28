@@ -33,6 +33,20 @@ Route::middleware(['auth:admin'])->group(function () {
 
     Route::get('/get-chart-data', [DashboardController::class, 'getChartData']);
 
+    //Mitra Manager
     
+    Route::get('/admin/mitra', [AdminController::class, 'indexmitra'])->name('admin.indexmitra'); // Untuk list mitra
+    Route::get('/admin/detailmitra/{id}', [AdminController::class, 'showmitra'])->name('admin.showmitra'); // Untuk melihat detail mitra
+
+    Route::get('/admin/proposal', [AdminController::class, 'indexproposal'])->name('admin.indexproposal'); // Untuk list mitra
+    Route::get('/admin/proposaldetail/{id}', [AdminController::class, 'showproposal'])->name('admin.showproposal'); // Untuk melihat detail mitra
+
+    Route::get('/admin/lpj', [AdminController::class, 'indexlpj'])->name('admin.indexlpj'); // Untuk list mitra
+    Route::get('/admin/lpj/{id}', [AdminController::class, 'showlpj'])->name('admin.showlpj'); // Untuk melihat detail mitra
+
+
+    // Route::get('/admin/lpj', function () {
+    //     return view('admin.manager.lpjmanager');
+    // });
 
 });

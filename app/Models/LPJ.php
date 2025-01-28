@@ -24,5 +24,9 @@ class LPJ extends Model
         'keterangan_lpj',
         'file_bukti_sisa_dana',
     ];
-    
+
+    public function proposal()
+    {
+        return $this->belongsTo(Proposal::class, 'id_proposal', 'id');
+    }
 }

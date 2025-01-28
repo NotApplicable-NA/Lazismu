@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Mitra;
 use App\Models\Proposal;
+use App\Models\LPJ;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -97,5 +98,46 @@ class AdminController extends Controller
         // dd($admin);
         // Kembalikan view dengan data
         return view("admin.dashboard", compact('mitras', 'proposals', 'formattedMonthlyProposals', 'formattedPillarData', 'formattedApprovedBudgets'));
+    }
+
+    //INDEX UNTUK ADMIN
+    public function indexmitra(){
+        $mitras = Mitra::paginate(10);
+        $allMitras = Mitra::all();
+
+        return view('admin.indexmitra', compact('mitras', 'allMitras'));
+    }
+
+    public function indexproposal(){
+        $proposals = Proposal::paginate(10);
+        $allProposals = Proposal::all();
+
+        return view('admin.indexproposal', compact('proposals', 'allProposals'));
+    }
+
+    public function indexlpj(){
+        $lpjs = LPJ::with('proposal')->paginate(10);
+        $allLPJ = LPJ::all();
+
+        return view('admin.indexlpj', compact('lpjs', 'allLPJ'));
+    }
+
+    //SHOW DETAIL UNTUK ADMIN
+    public function showproposal($id)
+    {
+        $proposal = Proposal::with('mitra')->findOrFail($id);
+        return view('admin.proposaldetail', compact('proposal'));
+    }
+
+    public function showlpj($id)
+    {
+        $lpj = LPJ::with(['proposal.mitra'])->findOrFail($id);
+        return view('admin.lpjdetail', compact('lpj'));
+    }
+
+    public function showmitra($id)
+    {
+        $mitra = Mitra::findOrFail($id);
+        return view('admin.mitradetail', compact('mitra'));
     }
 }
