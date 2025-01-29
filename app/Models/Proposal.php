@@ -30,4 +30,9 @@ class Proposal extends Model
     {
         return $this->belongsTo(Mitra::class, 'id_mitra', 'id');
     }
+    
+    public function catatan()
+    {
+        return $this->hasMany(Catatan::class, 'id_proposal', 'id');
+    }
 }

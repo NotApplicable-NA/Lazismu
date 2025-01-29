@@ -27,7 +27,7 @@
     <body>
         <!-- Sidebar -->
         <aside class="sidebar bg-dark text-white p-3" style="width: 250px;">
-            @include('layouts.sidebarbp')
+            @include('layouts.sidebaradmin')
         </aside>
 
         <!-- Main Content -->
@@ -48,63 +48,81 @@
                                 <div class="container">
                                     <div class="mb-3">
                                         <strong>Judul Proposal:</strong>
-                                        <p>Seminar Nasional IMM FTI UAD</p>
+                                        <p>{{$proposal->judul}}</p>
                                     </div>
                                 
                                     <div class="mb-3">
                                         <strong>Kategori:</strong>
-                                        <p>Lembaga</p>
+                                        <p>{{$proposal->kategori}}</p>
                                     </div>
                                 
                                     <div class="mb-3">
                                         <strong>Nama Pengirim:</strong>
-                                        <p>IMM FTI UAD</p>
+                                        <p>{{$proposal->mitra->nama}}</p>
                                     </div>
                                 
-                                    <div class="mb-3">
+                                    <!-- <div class="mb-3">
                                         <strong>No. Surat:</strong>
                                         <p>005/Pan-SemNas/XII/2024</p>
-                                    </div>
+                                    </div> -->
                                 
                                     <div class="mb-3">
                                         <strong>Kontak:</strong>
-                                        <p>0823411244123</p>
+                                        <p>{{$proposal->kontak}}</p>
                                     </div>
                                 
                                     <div class="mb-3">
-                                        <strong>Tanggal:</strong>
-                                        <p>25 November 2024</p>
+                                        <strong>Tanggal Masuk:</strong>
+                                        <p>{{$proposal->tgl_masuk}}</p>
                                     </div>
                                 
                                     <div class="mb-3">
-                                        <strong>Anggaran:</strong>
-                                        <p>Rp. 1.500.000,00</p>
+                                        <strong>Anggaran Diajukan:</strong>
+                                        <p>{{$proposal->anggaran_diajukan}}</p>
                                     </div>
                                 
                                     <div class="mb-3">
                                         <strong>File Proposal:</strong>
-                                        <a href="#" class="d-block text-truncate">
-                                            Proposal Seminar Nasional IMM FTI UAD.pdf
+                                        @if($proposal->file)
+                                        <a href="{{ asset('storage/proposals/' . $proposal->file) }}" target="_blank" 
+                                        class="text-blue-500 hover:underline">
+                                            Buka File Proposal
                                         </a>
+                                        @else
+                                            <p class="text-gray-500">Tidak ada file proposal yang tersedia.</p>
+                                        @endif
                                     </div>
                                 
                                     <div class="mb-3">
                                         <label for="kategoriPengajuan" class="form-label">Kategori Pengajuan</label>
                                         <select class="form-select" id="kategoriPengajuan" disabled>
-                                            <option selected>Pengajuan Bantuan UMKM</option>
-                                            <option selected>Pengajuan Beasiswa Pendidikan</option>
-                                            <option selected>Pengajuan Bantuan Kesehatan/Pengobatan</option>
-                                            <option selected>Pengajuan Bantuan Musafir</option>
-                                            <option selected>Pengajuan Bantuan (MUALLAF)</option>
-                                            <option selected>Pengajuan Bantuan Hutang (GHORIB)</option>
+                                        <option value="" @selected(empty($proposal->kategori_pengajuan))>-- Pilih Kategori --</option>
+                                            <option value="Pengajuan Bantuan UMKM" @selected($proposal->kategori_pengajuan === 'Pengajuan Bantuan UMKM')>
+                                                Pengajuan Bantuan UMKM
+                                            </option>
+                                            <option value="Pengajuan Beasiswa Pendidikan" @selected($proposal->kategori_pengajuan === 'Pengajuan Beasiswa Pendidikan')>
+                                                Pengajuan Beasiswa Pendidikan
+                                            </option>
+                                            <option value="Pengajuan Bantuan Kesehatan/Pengobatan" @selected($proposal->kategori_pengajuan === 'Pengajuan Bantuan Kesehatan/Pengobatan')>
+                                                Pengajuan Bantuan Kesehatan/Pengobatan
+                                            </option>
+                                            <option value="Pengajuan Bantuan Musafir" @selected($proposal->kategori_pengajuan === 'Pengajuan Bantuan Musafir')>
+                                                Pengajuan Bantuan Musafir
+                                            </option>
+                                            <option value="Pengajuan Bantuan (MUALLAF)" @selected($proposal->kategori_pengajuan === 'Pengajuan Bantuan (MUALLAF)')>
+                                                Pengajuan Bantuan (MUALLAF)
+                                            </option>
+                                            <option value="Pengajuan Bantuan Hutang (GHORIB)" @selected($proposal->kategori_pengajuan === 'Pengajuan Bantuan Hutang (GHORIB)')>
+                                                Pengajuan Bantuan Hutang (GHORIB)
+                                            </option>
                                         </select>
                                     </div>
         
                                     <div class="mb-3">
                                         <label for="catatan" class="form-label">Catatan</label>
-                                        <textarea class="form-control" id="catatan" rows="3" placeholder="Tulis Keterangan ..." readonly></textarea>
+                                        <textarea class="form-control" id="catatan" rows="3" placeholder="{{ $catatanFOtoMitra->isi_catatan ?? 'Tidak ada catatan tersedia' }}" readonly></textarea>
                                     </div>
-                                
+
                                     <div style="border-top: 2px solid #000; width: 100%; margin-top: 30px; margin-bottom: 30px;"></div>
                                      <!-- Card Disposisi -->
                                     
@@ -112,17 +130,21 @@
                                             <h5 class="card-title text-center">Disposisi</h5>
                                             <div class="mb-3">
                                                 <label for="disposisi-ke" class="form-label">Disposisi Ke :</label>
-                                                <input type="text" id="disposisi-ke" class="form-control fw-bold" value="Badan Pengurus" disabled />
+                                                <input type="text" id="disposisi-ke" class="form-control fw-bold" value="{{ $catatanManagerToBP->role_dituju ?? 'Tidak ada catatan tersedia' }}" disabled />
                                             </div>
                                             <div class="mb-3">
                                                 <label for="catatan-manager" class="form-label">Catatan Manager:</label>
-                                                <textarea id="catatan-manager" class="form-control" rows="3" placeholder="Catatan dari manager ke BP" disabled></textarea>
+                                                <textarea id="catatan-manager" class="form-control" rows="3" placeholder="{{ $catatanManagerToBP->isi_catatan ?? 'Tidak ada catatan tersedia' }}" disabled></textarea>
                                             </div>
-                                            <div class="mb-3">
-                                                <label for="catatan-bp" class="form-label">Catatan BP :</label>
-                                                <textarea id="catatan-bp" class="form-control" rows="3" placeholder="Tulis catatan BP ke Manager disini"></textarea>
-                                            </div>
-                                            <button id="btn-kirim-manager" class="btn btn-success w-100">Kirim</button>
+                                            <form action="{{ route('proposal.storeCatatanBP', ['id' => $proposal->id]) }}" method="POST">
+                                                @csrf
+                                                <input type="hidden" name="id_proposal" value="{{ $proposal->id }}">
+                                                <div class="mb-3">
+                                                    <label for="catatan-bp" class="form-label">Catatan BP ke Manager</label>
+                                                    <textarea id="catatan-bp" name="isi_catatan" class="form-control" rows="3" placeholder="Tulis catatan di sini">{{ old('isi_catatan', $catatanBPtoManager->isi_catatan ?? '') }}</textarea>
+                                                    </div>
+                                                <button type="submit" class="btn btn-success w-100">Kirim</button>
+                                            </form>
                                         </div>
 
                                 </div>

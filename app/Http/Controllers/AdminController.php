@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Mitra;
 use App\Models\Proposal;
 use App\Models\LPJ;
+use App\Models\Catatan;
+use App\Models\Admin;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -92,11 +94,6 @@ class AdminController extends Controller
             }
         }
 
-        // Format view: admin.{admin}.{dashboard}
-
-        // $view = "admin.dashboard";
-        // dd($admin);
-        // Kembalikan view dengan data
         return view("admin.dashboard", compact('mitras', 'proposals', 'formattedMonthlyProposals', 'formattedPillarData', 'formattedApprovedBudgets'));
     }
 
@@ -108,10 +105,26 @@ class AdminController extends Controller
         return view('admin.indexmitra', compact('mitras', 'allMitras'));
     }
 
-    public function indexproposal(){
-        $proposals = Proposal::paginate(10);
-        $allProposals = Proposal::all();
-
+    public function indexproposal($admin){
+        if ($admin === 'admin') {
+            // Jika admin, ambil semua proposal
+            $proposals = Proposal::paginate(10);
+            $allProposals = Proposal::all();
+        } elseif ($admin === 'bp') {
+            // Jika BP, hanya ambil proposal yang memiliki catatan dari Manager ke BP
+            $proposals = Proposal::whereHas('catatan', function ($query) {
+                $query->where('role_pengirim', 'Manager')
+                      ->where('role_dituju', 'BP');
+            })->paginate(10);
+            $allProposals = Proposal::whereHas('catatan', function ($query) {
+                $query->where('role_pengirim', 'Manager')
+                      ->where('role_dituju', 'BP');
+            });
+        } else {
+            // Jika role tidak dikenali, tampilkan kosong atau handle sesuai kebutuhan
+            $proposals = collect(); // Koleksi kosong
+        }
+    
         return view('admin.indexproposal', compact('proposals', 'allProposals'));
     }
 
@@ -120,6 +133,12 @@ class AdminController extends Controller
         $allLPJ = LPJ::all();
 
         return view('admin.indexlpj', compact('lpjs', 'allLPJ'));
+    }
+
+    public function indexadmins(){
+        $admins = Admin::all();
+
+        return view('admin.bp.managementuserbp', compact('admins'));
     }
 
     //SHOW DETAIL UNTUK ADMIN
@@ -140,4 +159,62 @@ class AdminController extends Controller
         $mitra = Mitra::findOrFail($id);
         return view('admin.mitradetail', compact('mitra'));
     }
+
+    public function proposalbp($id){
+        $proposal = Proposal::with(['mitra', 'catatan'])->findOrFail($id);
+
+        $catatanFOtoMitra = $proposal->catatan
+        ->where('role_pengirim', 'Frontoffice')
+        ->where('role_dituju', 'Mitra')
+        ->first();
+
+        // Ambil catatan dari Manager ke BP
+        $catatanManagerToBP = $proposal->catatan
+            ->where('role_pengirim', 'Manager')
+            ->where('role_dituju', 'BP')
+            ->first();
+
+            // Ambil catatan dari Manager ke BP
+        $catatanBPtoManager = $proposal->catatan
+        ->where('role_pengirim', 'BP')
+        ->where('role_dituju', 'Manager')
+        ->first();
+
+        return view('admin.bp.bpdetail', compact('proposal', 'catatanFOtoMitra', 'catatanManagerToBP', 'catatanBPtoManager'));
+    }
+
+    public function storeCatatanBP(Request $request, $id)
+    {
+        // Validasi input
+        $request->validate([
+            'id_proposal' => 'required|exists:proposals,id', // Pastikan id_proposal valid dan ada di tabel proposals
+            'isi_catatan' => 'required|string',
+        ]);
+
+        // Simpan catatan baru ke database
+        $catatan = Catatan::where([
+            'id_proposal' => $request->id_proposal,
+            'role_pengirim' => 'BP', // Sesuai role pengirim
+            'role_dituju' => 'Manager' // Sesuai role dituju
+        ])->first();
+    
+        if ($catatan) {
+            // Jika catatan sudah ada, update isi_catatan
+            $catatan->update([
+                'isi_catatan' => $request->isi_catatan,
+            ]);
+        } else {
+            // Jika belum ada, buat catatan baru
+            Catatan::create([
+                'id_proposal' => $request->id_proposal, // Ambil dari input hidden
+                'isi_catatan' => $request->isi_catatan,
+                'role_pengirim' => 'BP', // Sesuai role pengirim
+                'role_dituju' => 'Manager', // Sesuai role dituju
+                'status' => true, // Contoh: Set status default sebagai aktif
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Catatan berhasil dikirim.');
+    }
+
 }

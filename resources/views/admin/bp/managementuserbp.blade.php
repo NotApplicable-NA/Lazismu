@@ -19,7 +19,7 @@
     <body>
     <!-- Sidebar -->
     <aside class="sidebar bg-dark text-white p-3" style="width: 250px;">
-        @include('layouts.sidebarbp')
+        @include('layouts.sidebaradmin')
     </aside>
 
     <!-- Main Content -->
@@ -59,13 +59,18 @@
                     <td>{{ $admin->role }}</td>
                     <td>{{ $admin->email }}</td>
                     <td>
-                    <div class="inline-flex space-x-4">
-                        <!-- detail action -->
-                        <a href="#" class="flex items-center py-2 text-base font-medium text-gray-900 dark:text-white dark:hover:underline">
-                            <img src="/img/admin-trash.png" alt="Edit action" class="w-5 h-5" />
-                        </a>
-                    </div>
-                </td>
+                        <div class="inline-flex space-x-4">
+                            <!-- Tombol Hapus dengan Konfirmasi -->
+                            <form id="delete-form-{{ $admin->id }}" action="{{ route('admin.delete', $admin->id) }}" method="POST" style="display: none;">
+                                @csrf
+                                @method('DELETE')
+                            </form>
+                            
+                            <a href="#" onclick="confirmDelete({{ $admin->id }})" class="flex items-center py-2 text-base font-medium text-gray-900 dark:text-white dark:hover:underline">
+                                <img src="/img/admin-trash.png" alt="Delete action" class="w-5 h-5" />
+                            </a>
+                        </div>
+                    </td>
                 </tr>
                 @endforeach
             </tbody>
@@ -89,4 +94,13 @@
 </body>
 <!-- Footer -->
 @include('layouts.footer')
+
+<script>
+function confirmDelete(adminId) {
+    if (confirm('Apakah Anda yakin ingin menghapus akun admin ini?')) {
+        document.getElementById('delete-form-' + adminId).submit();
+    }
+}
+</script>
+
 </html>

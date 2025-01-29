@@ -38,15 +38,22 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::get('/admin/mitra', [AdminController::class, 'indexmitra'])->name('admin.indexmitra'); // Untuk list mitra
     Route::get('/admin/detailmitra/{id}', [AdminController::class, 'showmitra'])->name('admin.showmitra'); // Untuk melihat detail mitra
 
-    Route::get('/admin/proposal', [AdminController::class, 'indexproposal'])->name('admin.indexproposal'); // Untuk list mitra
+    Route::get('/{admin}/proposal', [AdminController::class, 'indexproposal'])->name('admin.indexproposal'); // Untuk list mitra
     Route::get('/admin/proposaldetail/{id}', [AdminController::class, 'showproposal'])->name('admin.showproposal'); // Untuk melihat detail mitra
 
     Route::get('/admin/lpj', [AdminController::class, 'indexlpj'])->name('admin.indexlpj'); // Untuk list mitra
     Route::get('/admin/lpj/{id}', [AdminController::class, 'showlpj'])->name('admin.showlpj'); // Untuk melihat detail mitra
 
 
-    // Route::get('/admin/lpj', function () {
-    //     return view('admin.manager.lpjmanager');
-    // });
+    //BP (Route Detail proposal harus dipisah karena halaman detail proposalnya beda dengan admin lain)
+    Route::get('/bp/bpdetail/{id}', [AdminController::class, 'proposalbp'])->name('admin.proposalbp');
+    Route::post('/proposal/{id}/store-catatan-bp', [AdminController::class, 'storeCatatanBP'])->name('proposal.storeCatatanBP');
+
+    Route::get('/bp/managementuserbp', [AdminController::class, 'indexadmins'])->name('admin.indexadmins');
+    Route::get('/adminregisterbp', [AdminAuthController::class, 'showRegisterFormBP'])->name('admin.register');
+    Route::post('/adminregisterbp', [AdminAuthController::class, 'register'])->name('admin.register.bp');
+    Route::delete('/admin/{id}/delete', [AdminAuthController::class, 'destroy'])->name('admin.delete');
+
+
 
 });

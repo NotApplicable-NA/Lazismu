@@ -10,38 +10,45 @@ use Illuminate\Support\Facades\Hash;
 class AdminAuthController extends Controller
 {
    // Register
-   public function register(Request $request)
-   {
-       $request->validate([
-           'nama' => 'required|string|max:255',
-           'username' => 'required|string|max:255|unique:admins',
-           'email' => 'required|string|email|max:255|unique:admins',
-           'password' => 'required|string|min:8|confirmed',
-       ]);
-   
-       Admin::create([
-           'nama' => $request->nama,
-           'username' => $request->username,
-           'email' => $request->email,
-           'password' => Hash::make($request->password),
-           'role' => 'admin', // Default role
-       ]);   
-    
-    // Tambahkan log untuk memeriksa apakah data berhasil tersimpan
-    logger()->info('Admin registered with username: ' . $request->username);
+    public function register(Request $request)
+    {
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:admins',
+            'email' => 'required|string|email|max:255|unique:admins',
+            'password' => 'required|string|min:8|confirmed',
+            'role' => 'required|string|in:BP,Manager', // Hanya role ini yang diterima
+        ]);
 
-       return redirect()->route('admin.login')->with('success', 'Admin registered successfully.');
-   }
+        Admin::create([
+            'nama' => $request->nama,
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => $request->password,
+            'role' => $request->role, // Simpan sesuai input
+        ]);
+
+        // Log data yang masuk
+        logger()->info('Admin registered with username: ' . $request->username);
+
+        return redirect()->route('admin.login')->with('success', 'Admin registered successfully.');
+    }
+
 // Menampilkan halaman login
 public function showLoginForm()
 {
     return view('auth.admin-login'); // Pastikan file ini ada di resources/views/admin/login.blade.php
 }
 
-public function showRegisterForm()
-{
-    return view('auth.admin-register'); // Pastikan file ini ada di resources/views/admin/login.blade.php
-}
+    public function showRegisterForm()
+    {
+        return view('auth.admin-register'); // Pastikan file ini ada di resources/views/admin/login.blade.php
+    }
+
+    public function showRegisterFormBP()
+    {
+        return view('auth.admin-registerbp'); // Pastikan file ini ada di resources/views/admin/login.blade.php
+    }
 
    // Login
    public function login(Request $request)
@@ -76,4 +83,12 @@ public function showRegisterForm()
 
        return redirect()->route('admin.login');
    }
+   public function destroy($id)
+    {
+        $admin = Admin::findOrFail($id);
+        $admin->delete();
+
+        return redirect()->back()->with('success', 'Admin berhasil dihapus.');
+    }
+
 }

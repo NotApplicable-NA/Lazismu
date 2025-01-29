@@ -22,6 +22,20 @@
         @include('layouts.sidebaradmin')
     </aside>
 
+    <?php
+    // Ambil segmen pertama dari URL
+    $role = request()->segment(1);
+
+    // Tentukan URL berdasarkan role
+    if ($role === 'admin') {
+        $detailUrl = "/admin/proposaldetail";
+    } elseif ($role === 'bp') {
+        $detailUrl = "/bp/bpdetail";
+    } else {
+        // Default fallback jika role tidak ditemukan
+        $detailUrl = "/admin/proposaldetail";
+    }
+    ?>
     <div class="flex-grow-1" style="margin-left: 250px;">
     <div class="container py-8 px-4">
             <!-- Header -->
@@ -59,7 +73,7 @@
                     <td>
                     <div class="inline-flex space-x-4">
                         <!-- read action -->
-                        <a href="/admin/proposaldetail/{{$proposal->id}}" class="flex items-center py-2 text-base font-medium text-gray-900 dark:text-white dark:hover:underline">
+                        <a href="{{$detailUrl}}/{{$proposal->id}}" class="flex items-center py-2 text-base font-medium text-gray-900 dark:text-white dark:hover:underline">
                             <img src="/img/admin-detail.png" alt="Read action" class="w-5 h-5" />
                         </a>
                     </div>

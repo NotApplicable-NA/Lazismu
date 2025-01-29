@@ -252,7 +252,7 @@
           @if(Auth::guard('admin')->user()->role === 'BP')
             <li class="border-b border-gray-300">
             <a
-              href="/bp/bp"
+              href="/bp/proposal"
               class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-[#F2CC89] group no-underline"
             >
             <img
@@ -374,7 +374,7 @@
             @if(Auth::guard('admin')->user()->role === 'superadmin')
               <li class="border-b border-gray-300">
               <a
-                href="/bp/bp"
+                href="/bp/proposal"
                 class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-[#F2CC89] group no-underline"
               >
               <img
