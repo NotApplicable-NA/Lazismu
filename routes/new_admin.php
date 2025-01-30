@@ -20,11 +20,15 @@ use App\Http\Controllers\DashboardController;
 use App\Models\Mitra;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Middleware\CheckSession;
+use App\Http\Controllers\AsesmenController;
 
 Route::get('/adminlogin', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
 Route::post('/adminlogin', [AdminAuthController::class, 'login']);
 
-Route::middleware(['auth:admin'])->group(function () {
+Route::middleware(['auth.admin'])->group(function () {
+
+    //Admin Side Dashboard
+
     Route::get('/admin/dashboard', [AdminController::class, 'dashboardadmin'])
         ->name('admin.dashboard')
         ->where(['admin' => 'manager|admin|bp|superadmin', 'dashboard' => 'dashboard']);
@@ -33,16 +37,16 @@ Route::middleware(['auth:admin'])->group(function () {
 
     Route::get('/get-chart-data', [DashboardController::class, 'getChartData']);
 
-    //Mitra Manager
+    //Admin Side Proposal, Mitra, LPJ (Tampil indeks dan detail)
     
-    Route::get('/admin/mitra', [AdminController::class, 'indexmitra'])->name('admin.indexmitra'); // Untuk list mitra
-    Route::get('/admin/detailmitra/{id}', [AdminController::class, 'showmitra'])->name('admin.showmitra'); // Untuk melihat detail mitra
+    Route::get('/admin/mitra', [AdminController::class, 'indexmitra'])->name('admin.indexmitra');
+    Route::get('/admin/detailmitra/{id}', [AdminController::class, 'showmitra'])->name('admin.showmitra');
 
-    Route::get('/{admin}/proposal', [AdminController::class, 'indexproposal'])->name('admin.indexproposal'); // Untuk list mitra
-    Route::get('/admin/proposaldetail/{id}', [AdminController::class, 'showproposal'])->name('admin.showproposal'); // Untuk melihat detail mitra
+    Route::get('/{admin}/proposal', [AdminController::class, 'indexproposal'])->name('admin.indexproposal');
+    Route::get('/admin/proposaldetail/{id}', [AdminController::class, 'showproposal'])->name('admin.showproposal');
 
-    Route::get('/admin/lpj', [AdminController::class, 'indexlpj'])->name('admin.indexlpj'); // Untuk list mitra
-    Route::get('/admin/lpj/{id}', [AdminController::class, 'showlpj'])->name('admin.showlpj'); // Untuk melihat detail mitra
+    Route::get('/admin/lpj', [AdminController::class, 'indexlpj'])->name('admin.indexlpj');
+    Route::get('/admin/lpj/{id}', [AdminController::class, 'showlpj'])->name('admin.showlpj');
 
 
     //BP (Route Detail proposal harus dipisah karena halaman detail proposalnya beda dengan admin lain)
@@ -54,6 +58,33 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::post('/adminregisterbp', [AdminAuthController::class, 'register'])->name('admin.register.bp');
     Route::delete('/admin/{id}/delete', [AdminAuthController::class, 'destroy'])->name('admin.delete');
 
+    Route::get('/frontoffice/frontofficedetail/{id}', [AdminController::class, 'proposalfo'])->name('admin.proposalfo');
+    Route::post('/proposal/{id}/store-catatan-fo', [AdminController::class, 'storeCatatanFO'])->name('proposal.storeCatatanFO');
 
+    //Keuangan (ROUTE PROPOSAL DAN DETAIL PROPOSAL)
 
+    Route::get('/keuangan/keuangan', function () {
+        return view('admin.keuangan.keuangan');
+    });
+
+    Route::get('/keuangan/keuangandetail', function () {
+        return view('admin.keuangan.keuangandetail');
+    });
+
+    //Manager (ROUTE PROPOSAL DAN DETAIL PROPOSAL UNTUK TINDAK LANJUT)
+
+    Route::get('/manager/managerdetail/{id}', [AdminController::class, 'proposalmanager'])->name('admin.proposalmanager');
+    Route::post('/proposal/disposisi', [AdminController::class, 'storeDisposisi'])->name('proposal.storeDisposisi');
+    Route::post('/proposal/storePengajuanManager', [AdminController::class, 'storePengajuanManager'])->name('proposal.storePengajuanManager');
+
+    //PROGRAM (ROUTE UNTUK PROPOSAL DAN DETAIL PROPOSAL PROGRAM)
+
+    Route::get('/program/programdetail/{id}', [AdminController::class, 'proposalprogram'])->name('admin.proposalprogram');
+
+    Route::post('/asesmen/store', [AsesmenController::class, 'store'])->name('asesmen.store');
+    Route::post('/proposal/storePemohon', [AdminController::class, 'storePemohon'])->name('proposal.storePemohon');
+
+    Route::get('/program/programdetail', function () {
+        return view('admin.program.programdetail');
+    });
 });

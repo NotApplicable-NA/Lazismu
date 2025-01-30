@@ -78,7 +78,7 @@ public function showLoginForm()
    public function logout(Request $request)
    {
        Auth::guard('admin')->logout();
-       $request->session()->invalidate();
+       $request->session()->forget('admin_auth'); 
        $request->session()->regenerateToken();
 
        return redirect()->route('admin.login');

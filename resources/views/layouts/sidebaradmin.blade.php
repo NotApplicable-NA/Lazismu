@@ -286,7 +286,7 @@
           @if(Auth::guard('admin')->user()->role === 'Frontoffice')
             <li class="border-b border-gray-300">
               <a
-                href="/frontoffice/frontoffice"
+                href="/frontoffice/proposal"
                 class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-[#F2CC89] group no-underline"
               >
               <img
@@ -322,7 +322,7 @@
             @if(Auth::guard('admin')->user()->role === 'Manager')
               <li class="border-b border-gray-300">
                 <a
-                  href="/manager/manager"
+                  href="/manager/proposal"
                   class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-[#F2CC89] group no-underline"
                 >
                 <img
@@ -356,7 +356,7 @@
             @if(Auth::guard('admin')->user()->role === 'Program')
               <li class="border-b border-gray-300">
                 <a
-                  href="/program/program"
+                  href="/program/proposal"
                   class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-[#F2CC89] group no-underline"
                 >
                 <img
@@ -405,7 +405,7 @@
 
               <li class="border-b border-gray-300">
                 <a
-                  href="/frontoffice/frontoffice"
+                  href="/frontoffice/proposal"
                   class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-[#F2CC89] group no-underline"
                 >
                 <img
@@ -435,7 +435,7 @@
 
               <li class="border-b border-gray-300">
                 <a
-                  href="/manager/manager"
+                  href="/manager/proposal"
                   class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-[#F2CC89] group no-underline"
                 >
                 <img
@@ -465,7 +465,7 @@
               </li>
               <li class="border-b border-gray-300">
                 <a
-                  href="/program/program"
+                  href="/program/proposal"
                   class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-[#F2CC89] group no-underline"
                 >
                 <img

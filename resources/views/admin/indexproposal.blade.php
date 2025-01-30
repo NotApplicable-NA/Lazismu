@@ -31,6 +31,14 @@
         $detailUrl = "/admin/proposaldetail";
     } elseif ($role === 'bp') {
         $detailUrl = "/bp/bpdetail";
+    } elseif ($role === 'frontoffice') {
+        $detailUrl = "/frontoffice/frontofficedetail";
+    } elseif ($role === 'keuangan') {
+        $detailUrl = "/keuangan/keuangandetail";
+    }elseif ($role === 'manager') {
+        $detailUrl = "/manager/managerdetail";
+    } elseif ($role === 'program') {
+        $detailUrl = "/program/programdetail";
     } else {
         // Default fallback jika role tidak ditemukan
         $detailUrl = "/admin/proposaldetail";

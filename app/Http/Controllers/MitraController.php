@@ -11,14 +11,17 @@ class MitraController extends Controller
 {
     public function login(Request $request)
     {
+        // Validasi input
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required|string|min:8',
         ]);
-        if (Auth::attempt($credentials)) {
+
+        // Gunakan guard 'mitra' untuk login
+        if (Auth::guard('mitra')->attempt($credentials)) {
             $request->session()->regenerate();
-            $user = Auth::user(); // Data user yang login.
-            return redirect()->intended('/dashboard/dashboardmlo'); // Ganti dengan URL dashboard Anda
+            $user = Auth::guard('mitra')->user(); // Ambil data mitra yang login
+            return redirect()->intended('/dashboard/dashboardmlo'); // Redirect ke dashboard mitra
         }
 
         return back()->withErrors([

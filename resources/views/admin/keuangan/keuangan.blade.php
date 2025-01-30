@@ -19,7 +19,7 @@
     <body>
     <!-- Sidebar -->
     <aside class="sidebar bg-dark text-white p-3" style="width: 250px;">
-        @include('layouts.sidebarkeuangan')
+        @include('layouts.sidebaradmin')
     </aside>
 
     <div class="flex-grow-1" style="margin-left: 250px;">

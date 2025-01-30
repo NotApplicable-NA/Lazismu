@@ -152,13 +152,13 @@
                                     </a>
                                 @endif
                                 <!-- Delete -->
-                                <form action="{{ route('proposal.destroy', $proposal->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus proposal ini?')" class="flex items-center">
+                                {{-- <form action="{{ route('proposal.destroy', $proposal->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus proposal ini?')" class="flex items-center">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="flex items-center py-2 text-base font-medium text-gray-900 hover:underline">
                                         <img src="/img/trash_action.png" alt="Delete action" class="w-5 h-5" />
                                     </button>
-                                </form>
+                                </form> --}}
                             </div>
                         </td>
                     </tr>

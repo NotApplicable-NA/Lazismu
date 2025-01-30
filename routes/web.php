@@ -32,17 +32,20 @@ Route::get('/', function () {
 Route::get('/login', [MitraController::class, 'showLoginForm'])->name('login');
 
 Route::post('/logout', function () {
-    Auth::logout();
-    request()->session()->invalidate();
-    request()->session()->regenerateToken();
-    return redirect('/login');
+    if (Auth::guard('mitra')->check()) {
+        Auth::guard('mitra')->logout();
+        session()->forget('mitra_auth');
+        return redirect()->route('login')->with('success', 'Anda telah logout.');
+    } else {
+        return redirect()->back()->with('error', 'Anda bukan pengguna mitra.');
+    }
 })->name('logout');
 
 Route::get('/register', function () {
     return view('register');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth:mitra'])->group(function () {
     Route::get('/dashboard/dashboardmlo', [ProposalController::class, 'index'])->name('dashboardmlo.index');
 
     Route::get('/dashboard/proposal', [ProposalController::class, 'index'])->name('proposal.index');

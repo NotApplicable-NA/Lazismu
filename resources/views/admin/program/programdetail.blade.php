@@ -17,7 +17,7 @@
 <body>
  <!-- Sidebar -->
  <aside class="sidebar bg-dark text-white p-3" style="width: 250px;">
-    @include('layouts.sidebarprogram')
+    @include('layouts.sidebaradmin')
 </aside>
 
 <div class="flex-grow-1" style="margin-left: 250px;">
@@ -34,37 +34,66 @@
                 <h5 class="card-title text-center">Disposisi</h5>
                 <div class="mb-3">
                     <label for="disposisi-ke" class="form-label">Disposisi dari :</label>
-                    <input type="text" id="disposisi-ke" class="form-control" value="Manager" disabled />
+                    <input type="text" id="disposisi-ke" class="form-control" value="{{$catatanManagerToProgram->role_pengirim}}" disabled />
                 </div>
-                <div class="mb-3">
-                    <label for="nama-assessment" class="form-label">Nama Assessment :</label>
-                    <input type="name" id="nama-assessment" class="form-control" />
-                </div>
-                <div class="mb-3">
-                    <label for="date-assessment" class="form-label">Tanggal Assessment :</label>
-                    <input type="date" id="date-assessment" class="form-control" />
-                </div>
-                <div class="mb-3">
-                    <label for="nominal-assessment" class="form-label">Nominal Assessment :</label>
-                    <input type="number" id="nominal-assessment" class="form-control" />
-                </div>
-                <div class="mb-3">
-                    <label for="file-assessment" class="form-label">File Assessment:</label>
-                    <input type="file" id="file-assessment" class="form-control" />
-                </div>
-                <div class="mb-3">
-                    <label for="catatan-manager" class="form-label">Catatan Manager:</label>
-                    <textarea id="catatan-manager" class="form-control" rows="3" placeholder="Catatan dari manager ke Program untuk di assesment" disabled></textarea>
-                </div>
-                <button id="btn-kirim-manager" class="btn btn-success w-100">Kirim</button>
+                <form action="{{ route('asesmen.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="id_proposal" value="{{ $proposal->id }}">
+                
+                    <!-- Nama Assessment -->
+                    <div class="mb-3">
+                        <label for="nama-assessment" class="form-label">Nama Assessment :</label>
+                        <input type="text" id="nama-assessment" class="form-control" name="nama_asesmen"
+                               value="{{ $asesmen->nama_asesmen ?? '' }}" 
+                               {{ $asesmen ? 'disabled' : '' }} />
+                    </div>
+                
+                    <!-- Tanggal Assessment -->
+                    <div class="mb-3">
+                        <label for="date-assessment" class="form-label">Tanggal Assessment :</label>
+                        <input type="date" id="date-assessment" class="form-control" name="tanggal_asesmen"
+                               value="{{ $asesmen->tanggal_asesmen ?? '' }}" 
+                               {{ $asesmen ? 'disabled' : '' }} />
+                    </div>
+                
+                    <!-- Nominal Assessment -->
+                    <div class="mb-3">
+                        <label for="nominal-assessment" class="form-label">Nominal Assessment :</label>
+                        <input type="number" id="nominal-assessment" class="form-control" name="nominal"
+                               value="{{ $asesmen->nominal ?? '' }}" 
+                               {{ $asesmen ? 'disabled' : '' }} />
+                    </div>
+                
+                    <!-- File Assessment -->
+                    <div class="mb-3">
+                        <label for="file-assessment" class="form-label">File Assessment:</label>
+                        @if($asesmen && $asesmen->file)
+                            <p><a href="{{ asset('storage/' . $asesmen->file) }}" target="_blank">Lihat File</a></p>
+                        @else
+                            <input type="file" id="file-assessment" class="form-control" name="file" {{ $asesmen ? 'disabled' : '' }}/>
+                        @endif
+                    </div>
+                
+                    <!-- Catatan Manager -->
+                    <div class="mb-3">
+                        <label for="catatan-manager" class="form-label">Catatan Manager:</label>
+                        <textarea id="catatan-manager" class="form-control" rows="3" placeholder="{{ $catatanManagerToProgram->isi_catatan ?? 'Tidak ada catatan' }}" disabled></textarea>
+                    </div>
+                
+                    <!-- Tombol Submit (Disembunyikan Jika Asesmen Sudah Ada) -->
+                    @if(!$asesmen)
+                        <button type="submit" id="btn-kirim-manager" class="btn btn-success w-100">Kirim</button>
+                    @endif
+                </form>                
             </div>
         </div>
 
-        <!-- Tombol untuk Menampilkan Form -->
-{{-- <div class="text-center mt-4">
-    <button id="show-form-button" class="btn btn-primary">Ajukan Permohonan</button>
-</div> --}}
-
+        @if($proposal->status == "Diterima")
+            <!-- Tombol untuk Menampilkan Form -->
+            <div class="text-center mt-4">
+                <button id="show-form-button" class="btn btn-primary">Ajukan Permohonan</button>
+            </div>
+        @endif
 
 <!-- Form yang akan muncul setelah tombol diklik -->
 <div id="form-container" class="container mt-5 mb-5" style="display: none;">
@@ -72,13 +101,23 @@
         <div class="card-body p-5">
             <h3 class="card-title text-center mb-2">Permohonan Pencairan Dana</h3>
 <!-- Dropdown Persetujuan Proposal -->
-<div class="mb-4">
-    <label class="form-label fw-bold">Pemohon :</label>
-    <select class="form-select" id="kategoriSelect">
-        <option value="konsumtif" class="text-success">Dina</option>
-        <option value="produktif" class="text-warning">Arsil</option>
-    </select>
-</div>
+            <form id="pemohon-form" action="{{ route('proposal.storePemohon') }}" method="POST">
+                @csrf
+                <input type="hidden" name="id_proposal" value="{{ $proposal->id }}">
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Pemohon :</label>
+                    <select class="form-select" id="kategoriSelect" name="program_pemohon">
+                        <option value="">Pilih Pemohon</option>
+                        @foreach ($adminsProgram as $admin)
+                        <option value="{{ $admin->nama }}">{{ $admin->nama }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <!-- Tampilkan error jika pemohon tidak dipilih -->
+                @if ($errors->has('program_pemohon'))
+                    <div class="text-danger">{{ $errors->first('program_pemohon') }}</div>
+                @endif
+            </form>
             <h3 class="card-title text-center mb-2">Informasi Proposal Mitra</h3>
             
             <div class="container">
@@ -270,10 +309,11 @@
                         <textarea id="catatan-manager" class="form-control" rows="3" placeholder="sudah aman" readonly></textarea>
                     </div>
             
-                    <!-- Simpan Button -->
                     <div class="text-end">
-                        <button type="submit" class="btn btn-success px-4 py-2 text-green-500 bg-[rgba(34,197,94,0.2)] border-2 border-green-500 rounded-lg hover:bg-[rgba(34,197,94,0.4)] hover:text-green-700 focus:outline-none focus:ring-2 focus:ring-green-300">Simpan</button>
-                    </div>
+                        <button type="button" id="submit-all" class="btn btn-success px-4 py-2">
+                            Simpan
+                        </button>
+                    </div>                    
 
             </div>
         </div>
@@ -285,8 +325,8 @@
     </div>
 
 <script>
- // Fungsi untuk menampilkan atau menyembunyikan form saat tombol diklik
-document.getElementById("show-form-button").addEventListener("click", function () {
+    // Fungsi untuk menampilkan atau menyembunyikan form saat tombol diklik
+    document.getElementById("show-form-button").addEventListener("click", function () {
     const formContainer = document.getElementById("form-container");
 
     // Tampilkan atau sembunyikan form
@@ -335,6 +375,38 @@ document.getElementById("submit-catatan").addEventListener("click", function () 
         alert("Catatan berhasil dikirim!");
     });
 </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const submitAllButton = document.getElementById("submit-all");
+            const pemohonForm = document.getElementById("pemohon-form");
+        
+            if (submitAllButton && pemohonForm) {
+                submitAllButton.addEventListener("click", function () {
+                    // Submit form input "Pemohon" sebelum tombol submit utama diklik
+                    pemohonForm.submit();
+                });
+            }
+        });
+    </script>
+
+    @if ($errors->has('program_pemohon'))
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '{{ $errors->first('program_pemohon') }}',
+                confirmButtonColor: '#d33'
+            });
+        });
+    </script>
+    @endif
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    
 </body>
 <!-- Footer -->
 @include('layouts.footer')

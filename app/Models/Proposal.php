@@ -24,6 +24,17 @@ class Proposal extends Model
         'status',
         'kontak',
         'file',
+        'kategori_pengajuan',
+        'pilar_program',
+        'sasaran_ashnaf',
+        'jumlah_laki',
+        'jumlah_perempuan',
+        'sumber_pendanaan',
+        'jumlah_pendanaan',
+        'pencairan_dana',
+        'catatan_manager',
+        'produktif_or_konsumtif', // Tambahkan kolom baru
+        'program_pemohon', // Tambahkan kolom ini
     ];
 
     public function mitra()
