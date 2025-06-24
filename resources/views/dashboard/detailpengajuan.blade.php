@@ -102,13 +102,21 @@
 
                 <div class="mb-3">
                     <label for="catatan" class="form-label">Catatan Revisi</label>
-                    <textarea class="form-control" id="catatan" rows="3" placeholder="Kurang ini itu" readonly></textarea>
+                    <textarea class="form-control" id="catatan" rows="3" readonly>{{ $catatanFOtoMitra->isi_catatan ?? 'Tidak ada catatan dari Front Office.' }}</textarea>
                 </div>
-                <!-- File Proposal -->
-                <div class="mb-3">
-                    <label for="editfileProposal" class="form-label">Upload Revisi Proposal</label>
-                    <input type="file" class="form-control" id="editfileProposal">
-                </div>
+                @if (strtolower(trim($proposal->status)) === 'revisi')
+                    <form action="{{ route('proposal.revisi', $proposal->id) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="editfileProposal" class="form-label">Upload Revisi Proposal</label>
+                            <input type="file" name="file" class="form-control" id="editfileProposal" required>
+                        </div>
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-success">Kirim Revisi</button>
+                        </div>
+                    </form>
+                @endif
+
             </div>
         </div>
     </div>

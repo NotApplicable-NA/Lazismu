@@ -12,6 +12,9 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class AdminController extends Controller
 {
@@ -110,50 +113,197 @@ class AdminController extends Controller
     public function indexproposal($admin){
         if ($admin === 'admin') {
             // Jika admin, ambil semua proposal
-            $proposals = Proposal::paginate(10);
-            $allProposals = Proposal::all();
+            $proposals = Proposal::orderBy('id', 'desc')->paginate(10);
+            $allProposals = Proposal::orderBy('id', 'desc')->get();
+            $title = "Index Proposal Admin";
         } elseif ($admin === 'bp') {
-            // Jika BP, hanya ambil proposal yang memiliki catatan dari Manager ke BP
-            $proposals = Proposal::whereHas('catatan', function ($query) {
-                $query->where('role_pengirim', 'Manager')
-                      ->where('role_dituju', 'BP');
-            })->paginate(10);
-            $allProposals = Proposal::whereHas('catatan', function ($query) {
-                $query->where('role_pengirim', 'Manager')
-                      ->where('role_dituju', 'BP');
-            });
-        } elseif ($admin === 'frontoffice') {
-            // Ambil semua proposal dengan status "Masuk"
-            $proposals = Proposal::where('status', 'Masuk')->paginate(10);
+            $all = Proposal::with(['catatan', 'mitra'])
+                ->whereHas('catatan', function ($query) {
+                    $query->where('role_pengirim', 'Manager')
+                          ->where('role_dituju', 'BP');
+                })->get();
+        
+            $proses = $all->filter(fn($p) => $p->status === 'Proses')->sortBy('id');
+            $selesai = $all->filter(fn($p) => $p->status !== 'Proses')->sortByDesc('id');
+        
+            $proses = $proses->map(function ($proposal) {
+                $catatan = $proposal->catatan;
             
-            // Ambil semua proposal dengan status "Masuk" tanpa pagination (jika diperlukan)
-            $allProposals = Proposal::where('status', 'Masuk')->get();
+                $managerToBP = $catatan->where('role_pengirim', 'Manager')
+                                       ->where('role_dituju', 'BP');
+                $lastDisposisi = $managerToBP->max('updated_at');
+            
+                $bpToManager = $catatan->where('role_pengirim', 'BP')
+                                       ->where('role_dituju', 'Manager');
+                $lastBalasan = $bpToManager->max('updated_at');
+            
+                // Tampilkan tanda jika ada disposisi yang belum dibalas
+                $tampilkan = false;
+                if ($lastDisposisi && (!$lastBalasan || $lastDisposisi > $lastBalasan)) {
+                    $tampilkan = true;
+                }
+            
+                $proposal->tampilkan_tanda = $tampilkan;
+            
+                return $proposal;
+            });            
+        
+            $prosesDenganTanda = $proses->filter(fn($p) => $p->tampilkan_tanda === true);
+            $prosesTanpaTanda  = $proses->filter(fn($p) => $p->tampilkan_tanda !== true);
+        
+            $sorted = $prosesDenganTanda
+                ->concat($prosesTanpaTanda)
+                ->concat($selesai)
+                ->values();
+        
+            $page = request()->get('page', 1);
+            $perPage = 10;
+            $proposals = new LengthAwarePaginator(
+                $sorted->forPage($page, $perPage),
+                $sorted->count(),
+                $perPage,
+                $page,
+                ['path' => request()->url(), 'query' => request()->query()]
+            );
+        
+            $allProposals = $sorted;
+            $title = "Index Proposal BP";
+        } elseif ($admin === 'frontoffice') {
+            // Ambil semua proposal dengan status "Masuk" dan "Revisi"
+            $proposals = Proposal::where('status', 'Masuk')
+                ->orWhere(function ($query) {
+                    $query->where('status', 'Revisi')
+                        ->whereHas('catatan', function ($q) {
+                            $q->where('role_pengirim', 'mitra')
+                                ->where('role_dituju', 'FO');
+                        });
+                })
+                ->orderBy('id')
+                ->paginate(10);
+
+            $allProposals = Proposal::where('status', 'Masuk')
+                ->orWhere(function ($query) {
+                    $query->where('status', 'Revisi')
+                        ->whereHas('catatan', function ($q) {
+                            $q->where('role_pengirim', 'mitra')
+                                ->where('role_dituju', 'FO');
+                        });
+                })
+                ->orderBy('id')
+                ->get();
+
+            $title = "Index Proposal Front Office";
         } elseif ($admin === 'manager') {
-            // Jika BP, hanya ambil proposal yang memiliki catatan dari Manager ke BP
-            $proposals = Proposal::whereHas('catatan', function ($query) {
-                $query->where('role_pengirim', 'Frontoffice')
-                      ->where('role_dituju', 'Manager');
-            })->paginate(10);
-            $allProposals = Proposal::whereHas('catatan', function ($query) {
-                $query->where('role_pengirim', 'Frontoffice')
-                      ->where('role_dituju', 'Manager');
-            });
-        } elseif ($admin === 'program') {
-            // Jika BP, hanya ambil proposal yang memiliki catatan dari Manager ke BP
-            $proposals = Proposal::whereHas('catatan', function ($query) {
-                $query->where('role_pengirim', 'Manager')
-                      ->where('role_dituju', 'Program');
-            })->paginate(10);
-            $allProposals = Proposal::whereHas('catatan', function ($query) {
-                $query->where('role_pengirim', 'Manager')
-                      ->where('role_dituju', 'Program');
-            });
+            $all = Proposal::with(['catatan', 'mitra'])
+                            ->whereHas('catatan', function ($query) {
+                                $query->where('role_pengirim', 'Frontoffice')
+                                    ->where('role_dituju', 'Manager');
+                            })->get();
+
+                        // Filter proposal 'Proses' dan 'selesai'
+                        $proses = $all->filter(fn($p) => $p->status === 'Proses')->sortBy('id');
+                        $selesai = $all->filter(fn($p) => $p->status !== 'Proses')->sortByDesc('id');
+
+                        // Tambahkan penanda ke proposal 'Proses'
+                        $proses = $proses->map(function ($proposal) {
+                            $catatan = $proposal->catatan;
+
+                            $foToManager = $catatan->where('role_pengirim', 'Frontoffice')
+                                                ->where('role_dituju', 'Manager')
+                                                ->count();
+
+                            $managerToBPOrProgram = $catatan->where('role_pengirim', 'Manager')
+                                                            ->whereIn('role_dituju', ['BP', 'Program']);
+                            $lastDisposisi = $managerToBPOrProgram->max('updated_at');
+
+                            $balasan = $catatan->whereIn('role_pengirim', ['BP', 'Program'])
+                                            ->where('role_dituju', 'Manager');
+                            $lastBalasan = $balasan->max('updated_at');
+
+                            $tampilkan = false;
+                            if ($foToManager > 0) {
+                                if ($managerToBPOrProgram->isEmpty()) {
+                                    $tampilkan = true; // baru masuk
+                                } elseif ($lastBalasan) {
+                                    if (!$lastDisposisi || $lastDisposisi < $lastBalasan) {
+                                        $tampilkan = true; // sudah dibalas, belum disposisi ulang
+                                    } else {
+                                        $tampilkan = false; // sudah dibalas, tapi manager sudah kirim disposisi ulang
+                                    }
+                                }
+                            }
+
+                            $proposal->tampilkan_tanda = $tampilkan;
+                            return $proposal;
+                        });
+
+                        // Gabungkan kembali urutan final
+                        $prosesDenganTanda = $proses->filter(fn($p) => $p->tampilkan_tanda === true);
+                        $prosesTanpaTanda  = $proses->filter(fn($p) => $p->tampilkan_tanda !== true);
+                        
+                        $sorted = $prosesDenganTanda
+                            ->concat($prosesTanpaTanda)
+                            ->concat($selesai)
+                            ->values();
+                        
+                        // Paginasi
+                        $page = request()->get('page', 1);
+                        $perPage = 10;
+                        $proposals = new LengthAwarePaginator(
+                            $sorted->forPage($page, $perPage),
+                            $sorted->count(),
+                            $perPage,
+                            $page,
+                            ['path' => request()->url(), 'query' => request()->query()]
+                        );
+
+                        $allProposals = $sorted;
+                        $title = "Index Proposal Manager";
+                    } elseif ($admin === 'program') {
+                        // Ambil semua proposal yang punya catatan dari Manager ke Program ATAU status Diterima
+                $all = Proposal::with(['catatan', 'mitra'])
+                ->where(function ($query) {
+                    $query->whereHas('catatan', function ($q) {
+                        $q->where('role_pengirim', 'Manager')
+                        ->where('role_dituju', 'Program');
+                    })->orWhere('status', 'Diterima');
+                })
+                ->get();
+
+            // Pisahkan berdasarkan status
+            $proses = $all->filter(function ($p) {
+                return $p->status === 'Proses' && $p->catatan->where('role_pengirim', 'Manager')->where('role_dituju', 'Program')->isNotEmpty();
+            })->sortBy('id');
+
+            $diterima = $all->filter(fn($p) => $p->status === 'Diterima')->sortBy('id');
+
+            // Gabungkan proposal proses dulu, lalu yang diterima
+            $sorted = $proses->concat($diterima)->values();
+
+            // Paginasi manual
+            $page = request()->get('page', 1);
+            $perPage = 10;
+            $proposals = new \Illuminate\Pagination\LengthAwarePaginator(
+                $sorted->forPage($page, $perPage),
+                $sorted->count(),
+                $perPage,
+                $page,
+                ['path' => request()->url(), 'query' => request()->query()]
+            );
+
+            $allProposals = $sorted;
+            $title = "Index Proposal Program";
+        } elseif ($admin === 'keuangan') {
+            $proposals = Proposal::whereNotNull('program_pemohon')->paginate(10);
+            $allProposals = Proposal::whereNotNull('program_pemohon')->get();
+            $title = "Index Proposal Keuangan";
         } else {
             // Jika role tidak dikenali, tampilkan kosong atau handle sesuai kebutuhan
-            $proposals = collect(); // Koleksi kosong
+            $proposals = collect(); // Kosong
+            $allProposals = collect();
         }
     
-        return view('admin.indexproposal', compact('proposals', 'allProposals'));
+        return view('admin.indexproposal', compact('proposals', 'allProposals', 'title'));
     }
 
     public function indexlpj(){
@@ -163,9 +313,19 @@ class AdminController extends Controller
         return view('admin.indexlpj', compact('lpjs', 'allLPJ'));
     }
 
-    public function indexadmins(){
-        $admins = Admin::all();
+    public function indexadmins(Request $request){
+        $roleSegment = $request->segment(1); // Ambil 'manager' atau 'bp'
 
+        if ($roleSegment === 'manager') {
+            // Semua admin kecuali Manager dan BP
+            $admins = Admin::whereNotIn('role', ['Manager', 'BP', 'superadmin'])->paginate(10);
+        } elseif ($roleSegment === 'bp') {
+            // Ambil semua admin
+            $admins = Admin::paginate(10);
+        } else {
+            abort(404);
+        }
+    
         return view('admin.bp.managementuserbp', compact('admins'));
     }
 
@@ -243,8 +403,10 @@ class AdminController extends Controller
                 'status' => true, // Contoh: Set status default sebagai aktif
             ]);
         }
+        $message = "Catatan berhasil diperbarui!";
 
-        return redirect()->back()->with('success', 'Catatan berhasil dikirim.');
+        return redirect()->route('admin.indexproposal', ['admin' => 'bp'])
+        ->with('success', $message);
     }
 
     //FUNGSI FO BUAT CATATAN DAN PROPOSAL
@@ -266,8 +428,6 @@ class AdminController extends Controller
 
         // Update kategori_pengajuan pada tabel proposal
         $proposal->kategori_pengajuan = $request->input('kategoriPengajuan');
-        $proposal->status = "Proses";
-        $proposal->save();
 
         // **Periksa apakah sudah ada catatan ke Manager dan Mitra**
         $catatanManager = Catatan::where('id_proposal', $proposal->id)
@@ -306,8 +466,17 @@ class AdminController extends Controller
                     'role_dituju' => 'Manager',
                 ]);
             }
+
+            $proposal->status = "Proses";
+            $proposal->save();
         } else {
-            // **Jika role_dituju adalah Mitra, update atau buat catatan ke Mitra**
+            // Hapus catatan dari mitra ke FO agar bisa upload ulang
+            Catatan::where('id_proposal', $proposal->id)
+                ->where('role_pengirim', 'mitra')
+                ->where('role_dituju', 'FO')
+                ->delete();
+        
+            // Update atau buat catatan FO → Mitra
             if ($catatanMitra) {
                 $catatanMitra->isi_catatan = $request->input('isi_catatan');
                 $catatanMitra->save();
@@ -319,10 +488,17 @@ class AdminController extends Controller
                     'role_dituju' => 'Mitra',
                 ]);
             }
+        
+            // Update status menjadi Revisi
+            $proposal->status = 'Revisi';
+            $proposal->save();
         }
+        
 
         // Redirect dengan pesan sukses
-        return redirect()->back()->with('success', 'Data berhasil diperbarui!');
+        return redirect()->route('admin.indexproposal', ['admin' => 'frontoffice'])
+        ->with('success', 'Catatan berhasil dikirim.');
+
     }
 
 
@@ -356,7 +532,7 @@ class AdminController extends Controller
     //FUNGSI MANAGER BUAT PROPOSAL DETAIL
 
     public function proposalmanager($id){
-        $proposal = Proposal::with(['mitra', 'catatan'])->findOrFail($id);
+        $proposal = Proposal::with(['mitra', 'catatan', 'asesmen'])->findOrFail($id);
 
         $catatanFOtoManager = $proposal->catatan
         ->where('role_pengirim', 'Frontoffice')
@@ -383,8 +559,11 @@ class AdminController extends Controller
                                         ->where('role_pengirim', 'BP')
                                         ->where('role_dituju', 'Manager')
                                         ->first();
+                                        
+        $asesmen = Asesmen::where('id_proposal', $id)
+                            ->first();
 
-        return view('admin.manager.managerdetail', compact('proposal', 'catatanFOtoManager', 'catatanManagerToBP', 'catatanManagerToProgram', 'catatanBPtoManager', 'catatanProgramToManager'));
+        return view('admin.manager.managerdetail', compact('proposal', 'catatanFOtoManager', 'catatanManagerToBP', 'catatanManagerToProgram', 'catatanBPtoManager', 'catatanProgramToManager', 'asesmen'));
     }
 
     public function storeDisposisi(Request $request)
@@ -435,7 +614,8 @@ class AdminController extends Controller
             $message = "Catatan baru berhasil ditambahkan!";
         }
     
-        return redirect()->back()->with('success', $message);
+        return redirect()->route('admin.indexproposal', ['admin' => 'manager'])
+        ->with('success', $message);
     }
 
     public function storePengajuanManager(Request $request){
@@ -454,14 +634,14 @@ class AdminController extends Controller
             'catatan_manager' => 'required|string',
         ]);
 
-        $id = $request->id_proposal;
-        $jumlah_total = $request->jumlah_laki + $request->jumlah_perempuan;
-
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        try {
+        try {    
+            $id = $request->id_proposal;
+            $jumlah_total = $request->jumlah_laki + $request->jumlah_perempuan;
+
             // Cari proposal berdasarkan ID
             $proposal = Proposal::findOrFail($id);
 
@@ -476,9 +656,31 @@ class AdminController extends Controller
             $proposal->pencairan_via = $request->pencairan_dana;
             $proposal->status = "Diterima";
             // $proposal->catatan_manager = $request->catatan_manager;
-            // dd($proposal->toArray());
 
             $proposal->save();
+
+            // Cek apakah catatan dengan `role_dituju = Admin` dan `role_pengirim = Manager` sudah ada
+                $catatan = Catatan::where('id_proposal', $id)
+                ->where('role_dituju', 'Admin')
+                ->where('role_pengirim', 'Manager')
+                ->first();
+
+            if ($catatan) {
+                // Jika catatan sudah ada, update isinya
+                $catatan->isi_catatan = $request->catatan_manager;
+                $catatan->updated_at = now();
+                $catatan->save();
+            } else {
+                // Jika belum ada, buat catatan baru
+                Catatan::create([
+                    'id_proposal' => $id,
+                    'role_pengirim' => 'Manager',
+                    'role_dituju' => 'Admin',
+                    'isi_catatan' => $request->catatan_manager,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
 
             return redirect()->route('admin.indexproposal', ['admin' => "manager"])->with('success', 'Pengajuan berhasil diperbarui!');
         } catch (\Exception $e) {
@@ -527,4 +729,80 @@ class AdminController extends Controller
         }
     }
 
+    public function storeKeuangan(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'id_proposal' => 'required|exists:proposals,id', // Pastikan ID proposal ada
+            'tgl_ambil_dana' => 'required|date',
+            'ttd_keuangan' => 'required|file|mimes:png,jpg,jpeg|max:2048', // Hanya file gambar maksimal 2MB
+            'ttd_manager' => 'required|file|mimes:jpg,png,jpeg|max:2048',
+            'ttd_bp' => 'required|file|mimes:jpg,png,jpeg|max:2048',
+        ]);
+
+        dd("Test");
+
+        $proposal = Proposal::findOrFail($request->id_proposal);
+
+
+        // Simpan file tanda tangan jika diunggah
+        if ($request->hasFile('ttd_keuangan')) {
+            $file = $request->file('ttd_keuangan');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('ttd_keuangan', $fileName, 'public'); // Simpan ke storage/public/ttd_keuangan
+            
+            // Hapus file lama jika ada
+            if ($proposal->ttd_keuangan) {
+                Storage::disk('public')->delete($proposal->ttd_keuangan);
+            }
+            $proposal->ttd_keuangan = $filePath;
+        }
+
+        // Simpan file tanda tangan manager
+        if ($request->hasFile('ttd_manager')) {
+            if ($proposal->ttd_manager) {
+                Storage::disk('public')->delete($proposal->ttd_manager);
+            }
+            $proposal->ttd_manager = $request->file('ttd_manager')->store('ttd_manager', 'public');
+        }
+
+        // Simpan file tanda tangan BP
+        if ($request->hasFile('ttd_bp')) {
+            if ($proposal->ttd_bp) {
+                Storage::disk('public')->delete($proposal->ttd_bp);
+            }
+            $proposal->ttd_bp = $request->file('ttd_bp')->store('ttd_bp', 'public');
+        }
+
+        // Update data proposal
+        $proposal->tgl_ambil_dana = $request->tgl_ambil_dana;
+        $proposal->save();
+
+        return redirect()->back()->with('success', 'Data berhasil disimpan!');
+    }
+
+    public function proposalkeuangan($id){
+
+        $proposal = Proposal::with(['mitra', 'catatan'])->findOrFail($id);
+
+        $catatanFOtoMitra = $proposal->catatan
+        ->where('role_pengirim', 'Frontoffice')
+        ->where('role_dituju', 'Mitra')
+        ->first();
+
+        $catatanManagerToAdmins = $proposal->catatan
+        ->where('role_pengirim', 'Manager')
+        ->where('role_dituju', 'Admin')
+        ->first();
+
+        // Cek apakah asesmen sudah ada untuk proposal ini
+        $asesmen = Asesmen::where('id_proposal', $id)->first();
+
+        // Ambil daftar admin dengan role "Program"
+        $adminsProgram = Admin::where('role', 'Program')->get(); 
+
+        return view('admin.keuangan.keuangandetail', compact('proposal', 'catatanFOtoMitra', 'asesmen', 'adminsProgram', 'catatanManagerToAdmins'));
+    }
+
+    
 }

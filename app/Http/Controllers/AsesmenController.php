@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Asesmen;
+use App\Models\Catatan;
 
 class AsesmenController extends Controller
 {
@@ -26,6 +27,23 @@ class AsesmenController extends Controller
 
         // Simpan data ke database
         Asesmen::create($validated);
+
+        // Cek apakah catatan balasan dari Program ke Manager sudah ada
+        $existingCatatan = Catatan::where('id_proposal', $request->id_proposal)
+        ->where('role_pengirim', 'Program')
+        ->where('role_dituju', 'Manager')
+        ->first();
+
+        if (!$existingCatatan) {
+        Catatan::create([
+            'id_proposal'   => $request->id_proposal,
+            'isi_catatan'   => 'Asesmen telah dikirim oleh Program.',
+            'role_pengirim' => 'Program',
+            'role_dituju'   => 'Manager',
+            'status'        => true,
+        ]);
+        }
+
 
         return redirect()->back()->with('success', 'Assessment berhasil disimpan!');
     }

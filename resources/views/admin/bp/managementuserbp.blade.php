@@ -34,9 +34,15 @@
 <div class="card shadow-sm border-0">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Admin <span class="badge bg-primary">{{ $admins->count() }} users</span></h5>
-                    <a href="{{ route('admin.register') }}" class="btn btn-primary btn-sm">
+                    @php
+                        $prefix = request()->segment(1); // ambil 'manager' atau 'bp'
+                        $routeName = $prefix === 'manager' ? 'admin.registermanager' : 'admin.registerbp';
+                    @endphp
+
+                    <a href="{{ route($routeName) }}" class="btn btn-primary">
                         <i class="fa fa-plus-circle"></i> Tambah Admin
                     </a>
+                                    
                 </div>
                     <div class="card-body p-3">
         <table class="table table-bordered table-striped text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -47,7 +53,6 @@
                     <th scope="col">Username</th>
                     <th scope="col">Role</th>
                     <th scope="col">Email</th>
-                    <th scope="col">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -58,36 +63,14 @@
                     <td>{{ $admin->username }}</td>
                     <td>{{ $admin->role }}</td>
                     <td>{{ $admin->email }}</td>
-                    <td>
-                        <div class="inline-flex space-x-4">
-                            <!-- Tombol Hapus dengan Konfirmasi -->
-                            <form id="delete-form-{{ $admin->id }}" action="{{ route('admin.delete', $admin->id) }}" method="POST" style="display: none;">
-                                @csrf
-                                @method('DELETE')
-                            </form>
-                            
-                            <a href="#" onclick="confirmDelete({{ $admin->id }})" class="flex items-center py-2 text-base font-medium text-gray-900 dark:text-white dark:hover:underline">
-                                <img src="/img/admin-trash.png" alt="Delete action" class="w-5 h-5" />
-                            </a>
-                        </div>
-                    </td>
                 </tr>
                 @endforeach
             </tbody>
+            <div class="d-flex justify-content-center mt-3">
+                {{ $admins->links() }}
+            </div>            
         </table>
     </div>
-                <div class="card-footer d-flex justify-content-between align-items-center">
-                    <span>Showing 1 to 10 of 100 entries</span>
-                    <nav>
-                        <ul class="pagination mb-0">
-                            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                        </ul>
-                    </nav>
-                </div>
             </div>       
         </div>
     </div>

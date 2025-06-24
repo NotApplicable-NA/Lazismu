@@ -126,7 +126,7 @@
                         </td>
                         <td class="px-6 py-4">{{ number_format($proposal->anggaran_diajukan, 0, ',', '.') }}</td>
                         <td class="px-6 py-4">{{ number_format($proposal->anggaran_disetujui, 0, ',', '.') }}</td>
-                        <td class="px-6 py-4">{{ $proposal->mitra->no_hp ?? 'N/A' }}</td>
+                        <td class="px-6 py-4">{{ $proposal->kontak ?? 'N/A' }}</td>
                         <td class="px-6 py-4">
                             <span class="px-4 py-2 rounded-lg text-sm font-medium
                                 @if ($proposal->status === 'Masuk') text-blue-600 bg-blue-100

@@ -90,7 +90,15 @@
                                 @endif
                                 </div>
 
-                                <div class="mb-3">
+                                @if(!empty($asesmen))
+                                <strong>File Asesmen:</strong>
+                                <a href="{{ asset('storage/' . $asesmen->file) }}" target="_blank"
+                                    class="text-blue-500 hover:underline">
+                                    Buka File Asesmen
+                                </a>
+                                @endif
+
+                                <div class="mb-3 mt-3">
                                     <label for="kategoriPengajuan" class="form-label">Kategori Pengajuan</label>
                                     <select class="form-select" id="kategoriPengajuan" disabled>
                                         <option selected>{{ $proposal->kategori_pengajuan ?? 'Pilih Kategori' }}</option>
@@ -222,9 +230,7 @@
                         <!-- Message Section -->
                         <div class="mb-3">
                             <label for="catatan-disposisi" class="form-label">Catatan Disposisi:</label>
-                            <textarea id="catatan-disposisi" name="catatan" class="form-control" rows="3" placeholder="Tulis catatan ..." required>
-                                {{ old('catatan') }}
-                            </textarea>
+                            <textarea id="catatan-disposisi" name="catatan" class="form-control" rows="3" placeholder="Tulis catatan ..." required>{{ old('catatan') }}</textarea>
                         </div>
                   
 
@@ -240,48 +246,7 @@
             </div>
         </div>
     </div>
-    {{-- <div class="card shadow p-3 mb-3">
-        <div class="card-body">
-            <h5 class="card-title">Disposisi</h5>
-
-            <div class="mb-3">
-                <label for="disposisi-ke" class="form-label">Disposisi Ke:</label>
-                <select id="disposisi-ke" name="role_dituju" class="form-select" required>
-                    <option value="" selected>- Pilih Tujuan -</option>
-                    <option value="Program">Program</option>
-                    <option value="BP">Badan Pengurus</option>
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label for="catatan-disposisi" class="form-label">Catatan Disposisi:</label>
-                <textarea id="catatan-disposisi" name="catatan" class="form-control" rows="3" placeholder="Tulis catatan ..." required></textarea>
-            </div>
-
-            <!-- File Upload Section for BP -->
-            <div class="mb-3" id="file-section" style="display: none;">
-                <label for="file-assessment" class="form-label">Unggah File:</label>
-                <input type="file" id="file-assessment" name="file_assessment" class="form-control">
-            </div>
-
-            <button type="submit" class="btn btn-primary">Kirim Disposisi</button>
-        </div>
-    </div> --}}
 </form>
-
-
-
-
-<!-- TESTING BUTTON KIRIM DI PAGE PROGRAM DAN BP -->
-
-<!-- Tombol untuk menerima catatan dari Program -->
-{{-- <button id="btn-terima-program" class="btn btn-primary">Terima Catatan dari Program</button> --}}
-
-<!-- Tombol untuk menerima catatan dari BP -->
-{{-- <button id="btn-terima-bp" class="btn btn-primary">Terima Catatan dari BP</button> --}}
-
-<!-- Tempat untuk menampilkan catatan -->
-{{-- <div class="container mt-4" id="catatan-container"></div> --}}
 
 <!-- FORMULIR PENGAJUAN -->
 <!-- Formulir Pengajuan -->
@@ -467,6 +432,29 @@
             </div>
                 </div>
             </div>
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const form = document.getElementById("form-disposisi");
+                    const catatan = document.getElementById("catatan-disposisi");
+                    const tujuan = document.getElementById("disposisi-ke");
+                
+                    form.addEventListener("submit", function (e) {
+                        const isiCatatan = catatan.value.trim();
+                        const tujuanVal = tujuan.value;
+                
+                        // Validasi
+                        if (isiCatatan === "" || tujuanVal === "") {
+                            e.preventDefault();
+                            if (tujuanVal === "") {
+                                alert("Harap pilih tujuan disposisi.");
+                            } else {
+                                alert("Harap isi catatan disposisi.");
+                            }
+                        }
+                    });
+                });
+                </script>                
+                
 </body>
 
 <script>
@@ -515,37 +503,6 @@
     });
 
     // Event Listener Tombol Kirim
-    btnKirim.addEventListener("click", () => {
-        const disposisiKeValue = disposisiKe.value;
-        const catatanManager = document.getElementById("catatan-manager").value;
-
-        if (!disposisiKeValue) {
-            alert("Harap pilih tujuan disposisi.");
-            return;
-        }
-
-        if (!catatanManager) {
-            alert("Harap isi catatan manager.");
-            return;
-        }
-
-        // Logika pengiriman data berdasarkan tujuan
-        if (disposisiKeValue === "Program") {
-            // Kirim data ke Program
-            console.log("Kirim ke Program:", {
-                catatanManager,
-            });
-        } else if (disposisiKeValue === "BP") {
-            // Kirim data ke BP (termasuk file)
-            console.log("Kirim ke BP:", {
-                catatanManager,
-            });
-        }
-
-        // Sembunyikan Card setelah submit
-        cardDisposisi.style.display = "none";
-        alert("Disposisi berhasil dikirim!");
-    });
 });
 
 

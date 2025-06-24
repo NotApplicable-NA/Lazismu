@@ -54,7 +54,9 @@ Route::middleware(['auth.admin'])->group(function () {
     Route::post('/proposal/{id}/store-catatan-bp', [AdminController::class, 'storeCatatanBP'])->name('proposal.storeCatatanBP');
 
     Route::get('/bp/managementuserbp', [AdminController::class, 'indexadmins'])->name('admin.indexadmins');
-    Route::get('/adminregisterbp', [AdminAuthController::class, 'showRegisterFormBP'])->name('admin.register');
+    Route::get('/adminregisterbp', function () {
+        return view('auth.admin-registerbp', ['from' => 'bp']);
+    })->name('admin.registerbp');
     Route::post('/adminregisterbp', [AdminAuthController::class, 'register'])->name('admin.register.bp');
     Route::delete('/admin/{id}/delete', [AdminAuthController::class, 'destroy'])->name('admin.delete');
 
@@ -63,19 +65,21 @@ Route::middleware(['auth.admin'])->group(function () {
 
     //Keuangan (ROUTE PROPOSAL DAN DETAIL PROPOSAL)
 
-    Route::get('/keuangan/keuangan', function () {
-        return view('admin.keuangan.keuangan');
-    });
+    Route::post('/keuangan/store', [AdminController::class, 'storeKeuangan'])->name('keuangan.store');
 
-    Route::get('/keuangan/keuangandetail', function () {
-        return view('admin.keuangan.keuangandetail');
-    });
+    Route::get('/keuangan/keuangandetail/{id}', [AdminController::class, 'proposalkeuangan'])->name('admin.proposalkeuangan');
+
+
 
     //Manager (ROUTE PROPOSAL DAN DETAIL PROPOSAL UNTUK TINDAK LANJUT)
 
     Route::get('/manager/managerdetail/{id}', [AdminController::class, 'proposalmanager'])->name('admin.proposalmanager');
     Route::post('/proposal/disposisi', [AdminController::class, 'storeDisposisi'])->name('proposal.storeDisposisi');
     Route::post('/proposal/storePengajuanManager', [AdminController::class, 'storePengajuanManager'])->name('proposal.storePengajuanManager');
+    Route::get('/manager/managementuser', [AdminController::class, 'indexadmins'])->name('admin.indexadmins');
+    Route::get('/adminregistermanager', function () {
+        return view('auth.admin-registerbp', ['from' => 'manager']);
+    })->name('admin.registermanager');
 
     //PROGRAM (ROUTE UNTUK PROPOSAL DAN DETAIL PROPOSAL PROGRAM)
 
@@ -84,7 +88,4 @@ Route::middleware(['auth.admin'])->group(function () {
     Route::post('/asesmen/store', [AsesmenController::class, 'store'])->name('asesmen.store');
     Route::post('/proposal/storePemohon', [AdminController::class, 'storePemohon'])->name('proposal.storePemohon');
 
-    Route::get('/program/programdetail', function () {
-        return view('admin.program.programdetail');
-    });
 });

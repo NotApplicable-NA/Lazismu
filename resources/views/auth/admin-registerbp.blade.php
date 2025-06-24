@@ -69,12 +69,16 @@
                     <!-- Role -->
                     <div>
                         <label for="role" class="block text-sm font-medium text-gray-900">Role</label>
-                        <select id="role" name="role" 
-                                class="form-control block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-600 focus:border-indigo-600" 
-                                required>
-                            <option value="BP" selected>Badan Pengurus</option>
-                            <option value="Manager">Manager</option>
-                        </select>
+                        <select name="role" class="form-select">
+                            @if ($from === 'manager')
+                                <option value="Program">Program</option>
+                                <option value="Keuangan">Keuangan</option>
+                                <option value="FO">Front Office</option>
+                            @elseif ($from === 'bp')
+                                <option value="Manager">Manager</option>
+                                <option value="BP">BP</option>
+                            @endif
+                        </select>                        
                     </div>
 
                     <!-- Password -->
@@ -101,12 +105,6 @@
                         </button>
                     </div>
                 </form>
-
-                <!-- Link ke Login -->
-                <p class="mt-10 text-center text-sm text-gray-500">
-                    Sudah Punya Akun?
-                    <a href="{{ route('login') }}" class="font-semibold text-indigo-600 hover:text-indigo-500">Masuk</a>
-                </p>
             </div>
         </div>
     </div>

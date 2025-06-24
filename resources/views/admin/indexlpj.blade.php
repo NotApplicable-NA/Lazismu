@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>LPJ Admin Manager</title>
+        <title>Index LPJ Admin</title>
         <!-- favicon -->
         <link rel="icon" type="image/png" href="/img/favicon.jpg">
         <!-- Fonts -->

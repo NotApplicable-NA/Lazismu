@@ -227,23 +227,67 @@
                         <label for="catatan-manager" class="form-label fw-bold">Catatan Manager :</label>
                         <textarea id="catatan-manager" class="form-control" rows="3" placeholder="Catatan dari Manager ke Program" readonly></textarea>
                     </div>
-            
-                    <!-- Date Section -->
-                    <div class="mb-3">
-                        <label for="date-cair" class="form-label">Tanggal Dicairkan :</label>
-                        <input type="date" id="date-cair" class="form-control" />
-                    </div>
 
-                    <!-- TTD Section -->
-                    <div class="mb-3">
-                        <label for="ttd" class="form-label">Tanda Tangan :</label>
-                        <input type="file" id="ttd" class="form-control" />
-                    </div>
+                    <form action="{{ route('keuangan.store') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="id_proposal" value="{{ $proposal->id }}">
+                    
+                        <!-- Date Section -->
+                        <div class="mb-3">
+                            <label for="date-cair" class="form-label">Tanggal Dicairkan :</label>
+                            <input type="date" name="tgl_ambil_dana" id="date-cair" class="form-control"
+                                value="{{ $proposal->tgl_ambil_dana ?? '' }}"
+                                {{ ($proposal->ttd_keuangan && $proposal->ttd_manager && $proposal->ttd_bp) ? 'disabled' : '' }} required />
+                        </div>
+                    
+                        <!-- TTD Keuangan -->
+                        <div class="mb-3">
+                            <label for="ttd" class="form-label">Tanda Tangan Keuangan:</label>
+                            @if($proposal->ttd_keuangan)
+                                <div class="mb-2">
+                                    <img src="{{ asset('storage/' . $proposal->ttd_keuangan) }}" alt="TTD Keuangan" class="img-thumbnail" style="max-width: 200px;">
+                                </div>
+                            @endif
+                            <input type="file" name="ttd_keuangan" id="ttd" class="form-control" accept="image/*"
+                                {{ ($proposal->ttd_keuangan && $proposal->ttd_manager && $proposal->ttd_bp) ? 'disabled' : '' }} required />
+                        </div>
+                    
+                        <!-- TTD Manager -->
+                        <div class="mb-3">
+                            <label class="form-label">Tanda Tangan Manager:</label>
+                            @if($proposal->ttd_manager)
+                                <div class="mb-2">
+                                    <img src="{{ asset('storage/' . $proposal->ttd_manager) }}" alt="TTD Manager" class="img-thumbnail" style="max-width: 200px;">
+                                </div>
+                            @endif
+                            <input type="file" name="ttd_manager" class="form-control" accept="image/*"
+                                {{ ($proposal->ttd_keuangan && $proposal->ttd_manager && $proposal->ttd_bp) ? 'disabled' : '' }} required />
+                        </div>
+                    
+                        <!-- TTD BP -->
+                        <div class="mb-3">
+                            <label class="form-label">Tanda Tangan BP:</label>
+                            @if($proposal->ttd_bp)
+                                <div class="mb-2">
+                                    <img src="{{ asset('storage/' . $proposal->ttd_bp) }}" alt="TTD BP" class="img-thumbnail" style="max-width: 200px;">
+                                </div>
+                            @endif
+                            <input type="file" name="ttd_bp" class="form-control" accept="image/*"
+                                {{ ($proposal->ttd_keuangan && $proposal->ttd_manager && $proposal->ttd_bp) ? 'disabled' : '' }} required />
+                        </div>
+                    
+                        <!-- Simpan Button -->
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-success px-4 py-2 text-green-500 bg-[rgba(34,197,94,0.2)] 
+                                    border-2 border-green-500 rounded-lg hover:bg-[rgba(34,197,94,0.4)] hover:text-green-700 
+                                    focus:outline-none focus:ring-2 focus:ring-green-300"
+                                    {{ ($proposal->ttd_keuangan && $proposal->ttd_manager && $proposal->ttd_bp) ? 'disabled' : '' }}>
+                                    Kirim
+                            </button>
+                        </div>
+                    </form>
+                    
 
-                    <!-- Simpan Button -->
-                    <div class="text-end">
-                        <button type="submit" class="btn btn-success px-4 py-2 text-green-500 bg-[rgba(34,197,94,0.2)] border-2 border-green-500 rounded-lg hover:bg-[rgba(34,197,94,0.4)] hover:text-green-700 focus:outline-none focus:ring-2 focus:ring-green-300">Kirim</button>
-                    </div>
 
             </div>
         </div>

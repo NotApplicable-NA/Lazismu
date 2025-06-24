@@ -17,7 +17,7 @@ class AdminAuthController extends Controller
             'username' => 'required|string|max:255|unique:admins',
             'email' => 'required|string|email|max:255|unique:admins',
             'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|string|in:BP,Manager', // Hanya role ini yang diterima
+            'role' => 'required|string|in:BP,Manager,FO,Keuangan,Program', // Hanya role ini yang diterima
         ]);
 
         Admin::create([
@@ -31,7 +31,7 @@ class AdminAuthController extends Controller
         // Log data yang masuk
         logger()->info('Admin registered with username: ' . $request->username);
 
-        return redirect()->route('admin.login')->with('success', 'Admin registered successfully.');
+        return redirect()->route('admin.indexadmins')->with('success', 'Admin registered successfully.');
     }
 
 // Menampilkan halaman login

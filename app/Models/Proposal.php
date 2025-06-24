@@ -46,4 +46,9 @@ class Proposal extends Model
     {
         return $this->hasMany(Catatan::class, 'id_proposal', 'id');
     }
+
+    public function asesmen()
+    {
+        return $this->hasOne(Asesmen::class, 'id_proposal', 'id');
+    }
 }

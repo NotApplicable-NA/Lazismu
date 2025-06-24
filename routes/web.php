@@ -62,6 +62,10 @@ Route::middleware(['auth:mitra'])->group(function () {
 
     Route::get('dashboard/editpropo/{id}', [ProposalController::class, 'edit'])->name('dashboard.editpropo');
     Route::put('dashboard/editpropo/{id}', [ProposalController::class, 'update'])->name('dashboard.updatepropo');
+
+    Route::post('/dashboard/proposal/revisi/{id}', [ProposalController::class, 'updateFileOnly'])
+    ->name('proposal.revisi');
+
     
     Route::delete('/dashboard/proposal/{id}', [ProposalController::class, 'destroy'])->name('proposal.destroy');
     

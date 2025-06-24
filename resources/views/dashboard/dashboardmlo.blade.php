@@ -107,7 +107,7 @@
                         </td>
                         <td class="px-6 py-4">{{ number_format($proposal->anggaran_diajukan, 0, ',', '.') }}</td>
                         <td class="px-6 py-4">{{ number_format($proposal->anggaran_disetujui, 0, ',', '.') }}</td>
-                        <td class="px-6 py-4">{{ $proposal->mitra->no_hp ?? 'N/A' }}</td>
+                        <td class="px-6 py-4">{{ $proposal->kontak ?? 'N/A' }}</td>
                         <td class="px-6 py-4">
                             <span class="px-4 py-2 rounded-lg text-sm font-medium
                                 @if ($proposal->status === 'Masuk') text-blue-600 bg-blue-100
@@ -132,9 +132,6 @@
                                         <img src="/img/edit_action.png" alt="Edit action" class="w-5 h-5 opacity-50" />
                                     </a>
                                 @endif
-                                <a href="#" class="flex items-center py-2 text-base font-medium text-gray-900 hover:underline">
-                                    <img src="/img/trash_action.png" alt="Delete action" class="w-5 h-5" />
-                                </a>
                             </div>
                         </td>
                     </tr>

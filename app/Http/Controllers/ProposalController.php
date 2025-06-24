@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Proposal;
 use App\Models\LPJ;
+use App\Models\Catatan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -12,7 +13,9 @@ class ProposalController extends Controller
     public function index(Request $request)
     {
         // Ambil data proposal dengan pagination (10 data per halaman)
-        $proposals = Proposal::with('mitra')->paginate(10);
+        $proposals = Proposal::with('mitra')
+        ->orderBy('id', 'desc')
+        ->paginate(10);
 
         // Logika untuk mengembalikan view yang sesuai
         if ($request->routeIs('dashboardmlo.index')) {
@@ -27,15 +30,52 @@ class ProposalController extends Controller
 
     public function show($id)
     {
-        // Ambil data proposal berdasarkan ID
         $proposal = Proposal::findOrFail($id);
-
-        // Ambil data LPJ berdasarkan id_proposal
         $lpj = LPJ::where('id_proposal', $proposal->id)->first();
 
-        // Kirim data proposal dan lpj ke view
-        return view('dashboard.detailpengajuan', compact('proposal', 'lpj'));
+        $catatanFOtoMitra = Catatan::where('id_proposal', $proposal->id)
+            ->where('role_pengirim', 'Frontoffice')
+            ->where('role_dituju', 'Mitra')
+            ->latest()
+            ->first();
+
+        $catatanFOtoManager = Catatan::where('id_proposal', $proposal->id)
+            ->where('role_pengirim', 'Frontoffice')
+            ->where('role_dituju', 'Manager')
+            ->exists();
+
+        $adaRevisiDariFO = Catatan::where('id_proposal', $proposal->id)
+            ->where('role_pengirim', 'Frontoffice')
+            ->where('role_dituju', 'Mitra')
+            ->exists();
+        
+        $mitraSudahUpload = Catatan::where('id_proposal', $proposal->id)
+            ->where('role_pengirim', 'Mitra')
+            ->where('role_dituju', 'Frontoffice')
+            ->exists();
+        
+        // Form hanya ditampilkan jika FO sudah revisi dan mitra belum respon
+        if ($catatanFOtoMitra && !$catatanFOtoManager) {
+            $filePath = storage_path('app/public/proposals/' . $proposal->file);
+
+            if (file_exists($filePath)) {
+                $fileTimestamp = filemtime($filePath);
+                $catatanTimestamp = strtotime($catatanFOtoMitra->created_at);
+
+                // Jika catatan revisi FO ke mitra lebih baru dari file yang ada → tampilkan form
+                $showUploadForm = $catatanTimestamp > $fileTimestamp;
+            } else {
+                // file tidak ada → tampilkan form
+                $showUploadForm = true;
+            }
+        }
+
+        return view('dashboard.detailpengajuan', compact(
+            'proposal', 'lpj', 'catatanFOtoMitra', 'catatanFOtoManager'
+        ));
     }
+
+
 
     public function store(Request $request)
     {
@@ -126,6 +166,61 @@ class ProposalController extends Controller
 
         return redirect()->route('proposal.index')->with('success', 'Proposal berhasil diperbarui.');
     }
+
+    public function updateFileOnly(Request $request, $id)
+    {
+        $proposal = Proposal::findOrFail($id);
+
+        $request->validate([
+            'file' => 'required|mimes:pdf|max:2048',
+        ]);
+
+        // Definisi path penyimpanan (relatif terhadap disk 'public')
+        $mainDir = 'proposals/';
+        $backupDir = 'proposals/backup/';
+
+        // Pastikan file lama ada
+        if ($proposal->file && Storage::disk('public')->exists($mainDir . $proposal->file)) {
+            // Buat folder backup jika belum ada
+            if (!Storage::disk('public')->exists($backupDir)) {
+                Storage::disk('public')->makeDirectory($backupDir);
+            }
+
+            // Format nama file backup
+            $backupFileName = $proposal->id_mitra . '_' . $proposal->id . '_' . now()->format('YmdHis') . '.pdf';
+
+            // Pindahkan file lama ke folder backup
+            Storage::disk('public')->move($mainDir . $proposal->file, $backupDir . $backupFileName);
+        }
+
+        // Simpan file baru
+        $newFileName = time() . '_' . $request->file('file')->getClientOriginalName();
+        $request->file('file')->storeAs($mainDir, $newFileName, 'public');
+
+        // Update nama file baru di DB
+        $proposal->update([
+            'file' => $newFileName,
+        ]);
+
+        // Tambahkan catatan dari Mitra ke FO
+        $existing = Catatan::where('id_proposal', $proposal->id)
+            ->where('role_pengirim', 'mitra')
+            ->where('role_dituju', 'FO')
+            ->first();
+
+        if (!$existing) {
+            Catatan::create([
+                'id_proposal' => $proposal->id,
+                'isi_catatan' => 'Mitra telah mengunggah revisi proposal.',
+                'role_pengirim' => 'mitra',
+                'role_dituju' => 'FO',
+            ]);
+        }
+
+
+        return redirect()->back()->with('success', 'File revisi proposal berhasil diperbarui.');
+    }
+
 
     public function destroy($id)
     {
