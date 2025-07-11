@@ -16,7 +16,7 @@
         <!-- Styles / Scripts -->
          <!-- Link CSS Bootstrap dari CDN -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+       
         @vite('resources/css/app.css')
 
         <style>
@@ -81,12 +81,12 @@
 </div>
 
 <div class="flex justify-center items-center p-8 min-h-screen">
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg bg-white dark:bg-gray-800 p-6">
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg bg-white   p-6">
         <!-- search dan ajukan proposal -->
          <!-- search dan ajukan proposal -->
         <div class="flex justify-between items-center mb-4">
             <!-- Input Search -->
-            <input type="text" id="search" placeholder="Cari proposal..." class="p-2 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <input type="text" id="search" placeholder="Cari proposal..." class="p-2 border border-gray-300 rounded-lg   dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
             
             <!-- Button Ajukan Proposal -->
             <button class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-500" onclick="window.location.href='/dashboard/pengajuan';">
@@ -106,7 +106,7 @@
         @endif
 
         <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400" style="table-layout: fixed;">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50   dark:text-gray-400">
                 <tr>
                     <th scope="col" class="px-2 py-3" style="width: 3%;">No</th>
                     <th scope="col" class="px-6 py-3" style="width: 27%;">Judul</th>
@@ -119,7 +119,7 @@
             </thead>
             <tbody>
                 @foreach ($proposals as $proposal)
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <tr class="bg-white border-b   dark:border-gray-700">
                         <td class="px-2 py-4">{{ $loop->iteration }}</td>
                         <td class="px-6 py-4 font-medium text-black truncate dark:text-black">
                             {{ $proposal->judul }}

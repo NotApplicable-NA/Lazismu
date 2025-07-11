@@ -7,14 +7,18 @@ use App\Models\LPJ;
 use App\Models\Catatan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+
 
 class ProposalController extends Controller
 {
     public function index(Request $request)
     {
+        $user = auth()->user();
         // Ambil data proposal dengan pagination (10 data per halaman)
         $proposals = Proposal::with('mitra')
         ->orderBy('id', 'desc')
+        ->where('id_mitra', $user->id)
         ->paginate(10);
 
         // Logika untuk mengembalikan view yang sesuai

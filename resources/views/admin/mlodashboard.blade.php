@@ -49,7 +49,7 @@
             </thead>
             <tbody>
                 @foreach($mitras as $mitra)
-                <tr class= "bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <tr class= "bg-white border-b   dark:border-gray-700">
                     <td><input type="checkbox"></td>
                     <td>{{ $mitra->nama }}</td>
                     <td><span class="badge {{ $mitra->status ? 'bg-green-500' : 'bg-red-500' }} text-white py-1 px-2 rounded">{{ $mitra->status ? 'Aktif' : 'Nonaktif' }}</span></td>

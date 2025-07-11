@@ -13,7 +13,6 @@
         <!-- Styles / Scripts -->
          <!-- Link CSS Bootstrap dari CDN -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="{{ mix('css/main.css') }}">
         @vite('resources/css/app.css')
 
         <style>
@@ -85,9 +84,9 @@
 </div>
 
 <div class="flex justify-center items-center p-8 min-h-screen">
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg bg-white dark:bg-gray-800 p-6">
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg bg-white   p-6">
         <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400" style="table-layout: fixed;">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50   dark:text-gray-400">
                 <tr>
                     <th scope="col" class="px-2 py-3" style="width: 3%;">No</th>
                     <th scope="col" class="px-6 py-3" style="width: 27%;">Judul</th>
@@ -100,7 +99,7 @@
             </thead>
             <tbody>
                 @foreach ($proposals as $proposal)
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <tr class="bg-white border-b   dark:border-gray-700">
                         <td class="px-2 py-4">{{ $loop->iteration }}</td>
                         <td class="px-6 py-4 font-medium text-black truncate dark:text-black">
                             {{ $proposal->judul }}
@@ -145,25 +144,25 @@
     <!-- <nav aria-label="Page navigation example" class="mt-4">
         <ul class="inline-flex -space-x-px text-sm justify-center w-full">
             <li>
-                <a href="#" class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Previous</a>
+                <a href="#" class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700   dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Previous</a>
             </li>
             <li>
-                <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-black">1</a>
+                <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700   dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-black">1</a>
             </li>
             <li>
-                <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-black">2</a>
+                <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700   dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-black">2</a>
             </li>
             <li>
-                <a href="#" aria-current="page" class="flex items-center justify-center px-3 h-8 text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-black">3</a>
+                <a href="#" aria-current="page" class="flex items-center justify-center px-3 h-8 text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700   dark:text-black">3</a>
             </li>
             <li>
-                <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-black">4</a>
+                <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700   dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-black">4</a>
             </li>
             <li>
-                <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-black">5</a>
+                <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700   dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-black">5</a>
             </li>
             <li>
-                <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-black">Next</a>
+                <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700   dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-black">Next</a>
             </li>
         </ul>
     </nav> -->

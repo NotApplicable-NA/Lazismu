@@ -57,7 +57,7 @@
             </thead>
             <tbody>
                 @foreach($admins as $admin)
-                <tr class= "bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <tr class= "bg-white border-b   dark:border-gray-700">
                     <td>{{ $admin->id }}</td>
                     <td>{{ $admin->nama }}</td>
                     <td>{{ $admin->username }}</td>

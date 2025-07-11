@@ -48,7 +48,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class= "bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <tr class= "bg-white border-b   dark:border-gray-700">
                     <td><input type="checkbox"></td>
                     <td>Proposal DAD IMM FTI</td>
                     <td>Rp.2,000,000.00</td>

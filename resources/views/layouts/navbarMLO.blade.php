@@ -11,7 +11,7 @@
         <!-- Styles / Scripts -->
          <!-- Link CSS Bootstrap dari CDN -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+       
         @vite(['resources/css/app.css','resources/js/app.js'])
     </head>
   
@@ -20,7 +20,7 @@
 
     <!-- navbar -->
     <header class="antialiased">
-  <nav class="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
+  <nav class="bg-white border-gray-200 px-4 lg:px-6 py-2.5  ">
       <div class="flex flex-wrap justify-between items-center">
       <div class="flex justify-start items-center">
       <a href="#" class="flex mr-4 ml-20">
@@ -30,7 +30,7 @@
 
 
           <div class="flex items-center lg:order-4">
-          <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+          <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white   md:  dark:border-gray-700">
           <li>
               <a href="/dashboard/dashboardmlo" class="block py-2 px-3 text-black rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent no-underline">Home</a>
           </li>
@@ -50,8 +50,8 @@
                   <img src="/img/notifications.png" class="mr-3 h-8" alt="Lazismu Logo">       
               </button>
               <!-- Dropdown menu -->
-              <div class="hidden overflow-hidden z-50 my-4 max-w-sm text-base list-none bg-white rounded divide-y divide-gray-100 shadow-lg dark:divide-gray-600 dark:bg-gray-700" id="notification-dropdown">
-                  <div class="block py-2 px-4 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+              <div class="hidden overflow-hidden z-50 my-4 max-w-sm text-base list-none bg-white rounded divide-y divide-gray-100 shadow-lg dark:divide-gray-600  " id="notification-dropdown">
+                  <div class="block py-2 px-4 text-base font-medium text-center text-gray-700 bg-gray-50   dark:text-gray-400">
                       Notifications
                   </div>
                   <div>
@@ -116,7 +116,7 @@
                       </div>
                   </a>
                   </div>
-                  <a href="#" class="block py-2 text-base font-medium text-center text-gray-900 bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:underline">
+                  <a href="#" class="block py-2 text-base font-medium text-center text-gray-900 bg-gray-50 hover:bg-gray-100   dark:text-white dark:hover:underline">
                       <div class="inline-flex items-center ">
                       <svg aria-hidden="true" class="mr-2 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path></svg>
                       View all
@@ -129,14 +129,14 @@
                   <img class="w-8 h-8 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" alt="user photo">
               </button>
               <!-- Dropdown menu -->
-              <div class="hidden z-50 my-4 w-56 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown">
+              <div class="hidden z-50 my-4 w-56 text-base list-none bg-white rounded divide-y divide-gray-100 shadow   dark:divide-gray-600" id="dropdown">
                   <div class="py-3 px-4">
                       <span class="block text-sm font-semibold text-gray-900 dark:text-black">{{ Auth::user()->nama ?? 'Guest' }}</span>
                       <span class="block text-sm text-gray-500 truncate dark:text-gray-400">{{ Auth::user()->email ?? 'guest@example.com' }}</span>
                   </div>
                   <ul class="py-1 text-gray-500 dark:text-gray-400" aria-labelledby="dropdown">
                       <li>
-                          <a href="/dashboard/profilemlo" class="block py-2 px-4 text-sm text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">My profile</a>
+                          <a href="/dashboard/profilemlo" class="block py-2 px-4 text-sm text-gray-700 bg-gray-50   dark:text-gray-400">My profile</a>
                       </li>
                   </ul>
                   
@@ -144,7 +144,7 @@
                       <li>
                       <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf
-                        <button type="submit" class="block py-2 px-4 text-sm text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <button type="submit" class="block py-2 px-4 text-sm text-gray-700 bg-gray-50   dark:text-gray-400">
                             Logout
                         </button>
                     </form>

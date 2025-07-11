@@ -11,13 +11,13 @@
         <!-- Styles / Scripts -->
          <!-- Link CSS Bootstrap dari CDN -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+       
         @vite(['resources/css/app.css','resources/js/app.js'])
     </head>
       <body>
     <!-- navbar -->
     <header class="antialiased">
-<nav class="fixed top-0 left-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+<nav class="fixed top-0 left-0 z-50 w-full bg-white border-b border-gray-200   dark:border-gray-700">
   <div class="w-full px-0 py-3">
     <div class="flex items-center justify-between">
     <div class="flex justify-start items-center">
@@ -35,8 +35,8 @@
                   <img src="/img/notifications.png" class="mr-3 h-8" alt="Lazismu Logo">       
               </button>
               <!-- Dropdown menu -->
-              <div class="hidden overflow-hidden z-50 my-4 max-w-sm text-base list-none bg-white rounded divide-y divide-gray-100 shadow-lg dark:divide-gray-600 dark:bg-gray-700" id="notification-dropdown">
-                  <div class="block py-2 px-4 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+              <div class="hidden overflow-hidden z-50 my-4 max-w-sm text-base list-none bg-white rounded divide-y divide-gray-100 shadow-lg dark:divide-gray-600  " id="notification-dropdown">
+                  <div class="block py-2 px-4 text-base font-medium text-center text-gray-700 bg-gray-50   dark:text-gray-400">
                       Notifications
                   </div>
                   <div>
@@ -101,7 +101,7 @@
                       </div>
                   </a>
                   </div>
-                  <a href="#" class="block py-2 text-base font-medium text-center text-gray-900 bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:underline">
+                  <a href="#" class="block py-2 text-base font-medium text-center text-gray-900 bg-gray-50 hover:bg-gray-100   dark:text-white dark:hover:underline">
                       <div class="inline-flex items-center ">
                       <svg aria-hidden="true" class="mr-2 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path></svg>
                       View all
@@ -114,7 +114,7 @@
               </button>
               <!-- Dropdown menu -->
               <!-- Sidebar untuk Mitras dan Admin -->
-              <div class="hidden z-50 my-4 w-56 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown">
+              <div class="hidden z-50 my-4 w-56 text-base list-none bg-white rounded divide-y divide-gray-100 shadow   dark:divide-gray-600" id="dropdown">
                 <div class="py-3 px-4">
                     <!-- Cek Auth -->
                     @if(Auth::guard('admin')->check())
@@ -144,7 +144,7 @@
                     <li>
                         <form method="POST" action="{{ Auth::guard('admin')->check() ? route('admin.logout') : route('mitras.logout') }}">
                             @csrf
-                            <button type="submit" class="block py-2 px-4 text-sm text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <button type="submit" class="block py-2 px-4 text-sm text-gray-700 bg-gray-50   dark:text-gray-400">
                                 Logout
                             </button>
                         </form>
